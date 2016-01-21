@@ -1,0 +1,29 @@
+{
+    "production": {
+        "host": "ds047305.mongolab.com",
+        "db": "fourtify-api-prod",
+        "port": "47305",
+        "credentials": {
+            "user": "fourtify-api-prod",
+            "pass": "fourtify-api-prod333"
+        }
+    },
+    "development": {
+        "host": "ds047095.mongolab.com",
+        "db": "fourtify-api-dev",
+        "port": "47095",
+        "credentials": {
+            "user": "fourtify-api-dev",
+            "pass": "fourtify-api-dev333"
+        }
+    },
+    "test": {
+        "host": "ds047355.mongolab.com",
+        "db": "fourtify-api-test",
+        "port": "47355",
+        "credentials": {
+            "user": "fourtify-api-test",
+            "pass": "fourtify-api-test333"
+        }
+    }
+}
