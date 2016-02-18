@@ -1,7 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    relationship = require('mongoose-relationship'),
-    bcrypt = require('bcrypt-nodejs');
+    relationship = require('mongoose-relationship');
 
 var visitorsSchema = mongoose.Schema ({
     provider: {
@@ -39,3 +38,5 @@ visitorsSchema.pre('save', function(next) {
     this.timeStamp.updated = new Date();
     next();
 });
+
+module.exports = mongoose.model('visitors', visitorsSchema);
