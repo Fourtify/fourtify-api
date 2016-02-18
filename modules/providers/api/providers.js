@@ -62,7 +62,7 @@ router.post('/', function(req, res) {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.status(200).end();
+            res.status(200).send(data);
         }
     });
 });
@@ -83,7 +83,7 @@ router.put('/:providerId', function(req, res) {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.status(200).end();
+            res.status(200).send(data);
         }
     });
 });
