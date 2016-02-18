@@ -1,0 +1,1 @@
+/** settings schema goes here **/

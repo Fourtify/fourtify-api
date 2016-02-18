@@ -1,0 +1,1 @@
+/** queue history schema goes here **/

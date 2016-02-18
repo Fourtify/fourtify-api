@@ -29,11 +29,13 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 //@todo modules that we will be implementing
-/*app.use('/settings', require('./modules/settings/api/settings.js'));
-app.use('/sites', require('./modules/sites/api/sites.js'));
+app.use('/settings', require('./modules/settings/api/settings.js'));
+app.use('/providers', require('./modules/sites/api/providers.js'));
 app.use('/authentication', require('./modules/authentication/api/authentication.js'));
-app.use('/staff/groups', require('./modules/staff/api/staffGroups.js'));
-app.use('/staff', require('./modules/staff/api/staff.js'));*/
+app.use('/employee', require('./modules/staff/api/employee.js'));
+app.use('/appointments', require('./modules/staff/api/appointments.js'));
+app.use('/queue', require('./modules/staff/api/queue.js'));
+app.use('/queue/history', require('./modules/staff/api/queueHistory.js'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

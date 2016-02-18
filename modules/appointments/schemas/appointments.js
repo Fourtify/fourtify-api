@@ -1,0 +1,1 @@
+/** appointments schema goes here **/

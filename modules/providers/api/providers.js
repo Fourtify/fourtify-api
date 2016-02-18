@@ -4,21 +4,17 @@ var crypto = require('crypto');
 var moment = require('moment');
 var router = express.Router();
 
-var SiteFactory = require('../src/SiteFactory');
+var ProviderFactory = require('../src/ProviderFactory');
 var Error = require("../../errors/src/Error");
 var AuthMiddleware = require("../../authentication/src/AuthMiddleware");
 
-// *************************************************************************
-// **************************** Public Methods *****************************
-// *************************************************************************
-
 // =========================================================================
-// GET - /sites
+// GET - /providers
 // =========================================================================
-// Get sites based on query parameters. If id is passed in, 1 result is returned, otherwise an array is returned
+// Get providers based on query parameters. If id is passed in, 1 result is returned, otherwise an array is returned
 router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
-        SiteFactory.findSiteById(req.query.id, function(err, data) {
+        ProviderFactory.findProviderById(req.query.id, function(err, data) {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -26,7 +22,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             }
         });
     } else {
-        SiteFactory.findSite({
+        ProviderFactory.findProvider({
             include: req.query.include,
             exclude: req.query.exclude,
             paginate: req.query.paginate,
@@ -47,20 +43,20 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
 
 
 // =========================================================================
-// POST - /sites
+// POST - /providers
 // =========================================================================
-// Creates a new site
+// Creates a new provider
 router.post('/', function(req, res) {
 
     if (!req.body.name) {
-        return res.status(500).send(new Error("SIA001"));
+        return res.status(500).send(new Error("PROVIDER001"));
     }
-    var clientId = SiteFactory.generateTimeHash(req.body.name);
+    var clientId = ProviderFactory.generateTimeHash(req.body.name);
 
-    SiteFactory.createSite({
+    ProviderFactory.createProvider({
         name: req.body.name,
         clientId: clientId,
-        clientSecret: SiteFactory.generateTimeHash(clientId),
+        clientSecret: ProviderFactory.generateTimeHash(clientId),
         status: req.body.status
     }, function(err, data) {
         if (err) {
@@ -72,13 +68,13 @@ router.post('/', function(req, res) {
 });
 
 // =========================================================================
-// PUT - /sites
+// PUT - /providers
 // =========================================================================
-// Updates a site
-router.put('/:siteId', function(req, res) {
+// Updates a provider
+router.put('/:providerId', function(req, res) {
 
-    SiteFactory.updateSite({
-        id: req.params.siteId,
+    ProviderFactory.updateProvider({
+        id: req.params.providerId,
         name: req.body.name,
         clientId: req.body.clientId,
         clientSecret: req.body.clientSecret,
@@ -93,11 +89,11 @@ router.put('/:siteId', function(req, res) {
 });
 
 // =========================================================================
-// DELETE - /sites
+// DELETE - /providers
 // =========================================================================
-// deletes a site
-router.put('/:siteId', function(req, res) {
-    SiteFactory.deleteSite(req.params.siteId, function(err) {
+// deletes a provider
+router.put('/:providerId', function(req, res) {
+    ProviderFactory.deleteProvider(req.params.providerId, function(err) {
         if (err) {
             res.status(500).send(err);
         } else {
