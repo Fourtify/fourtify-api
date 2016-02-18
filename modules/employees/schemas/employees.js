@@ -63,7 +63,7 @@ employeesSchema.methods.generateTemporaryPassword = function(length) {
 
 // Check if password is valid
 employeesSchema.methods.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.password.value);
+    return bcrypt.compareSync(password, this.password);
 };
 
 module.exports = mongoose.model('employees', employeesSchema);

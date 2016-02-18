@@ -21,8 +21,10 @@ module.exports = class Employee {
         //if an object was passed in
         else if (u && (typeof u == "object" || u instanceof Object)) {
             if (u && u._id) {
+                this.id = u._id;
                 this.isInDatabase = true;
             } else if (u && u.id) {
+                this.id = u.id;
                 this.isInDatabase = true;
             }
             if (u && u.provider) {

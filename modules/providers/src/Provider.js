@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = class Site {
+module.exports = class Provider {
 
     constructor(s) {
 

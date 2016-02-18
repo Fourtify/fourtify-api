@@ -65,7 +65,7 @@ module.exports = class AuthenticationFactory {
 
 
     static createRefreshToken(tokenObj, callback) {
-        var refreshToken = new refreshTokensStaffSchema();
+        var refreshToken = new refreshTokensSchema();
 
         if (tokenObj.employee) {
             refreshToken.employee = tokenObj.employee;

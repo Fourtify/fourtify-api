@@ -55,7 +55,7 @@ router.post('/token', function(req, res) {
     var clientSecret = auth[2];
 
     //check and find site
-    EmployeeFactory.findSiteByClientIdSecret({
+    ProviderFactory.findProviderByClientIdSecret({
         clientId: clientId,
         clientSecret: clientSecret
     }, function(err, data) {
@@ -68,7 +68,7 @@ router.post('/token', function(req, res) {
             if (grantType == "password") {
                 async.waterfall([
                         function(callback) {
-                            EmployeeFactory.authenticate({
+                            EmployeeFactory.authenticateEmployee({
                                 provider: provider.id,
                                 email: req.body.email,
                                 password: req.body.password

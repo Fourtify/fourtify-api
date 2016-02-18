@@ -16,13 +16,6 @@ module.exports = class AuthMiddleware {
     constructor() {}
 
     static authenticate() {
-        //temporary method to allow everything to pass for demo purposes;
-        return function(req, res, next) {
-            next();
-        };
-
-    }
-    static authenticateActual() {
         /*if (typeof options == 'string') {
             options = { redirectTo: options }
         }

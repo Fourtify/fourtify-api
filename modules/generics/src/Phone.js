@@ -2,10 +2,10 @@
 module.exports = class Phone {
 
     constructor(p) {
-        if (p && (!p.type || !p.number)) {
-            throw new Error("type and number must both be empty defined");
-        } else if (p) {
+        if (p && p.type) {
             this.type = p.type;
+        }
+        if (p && p.number) {
             this.number = p.number;
         }
     }
