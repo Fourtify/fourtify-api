@@ -17,7 +17,10 @@ module.exports = class AuthMiddleware {
 
     static authenticate() {
         //temporary method to allow everything to pass for demo purposes;
-        next();
+        return function(req, res, next) {
+            next();
+        };
+
     }
     static authenticateActual() {
         /*if (typeof options == 'string') {

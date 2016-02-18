@@ -1,84 +1,230 @@
 "use strict";
 
-var md5 = require("md5");
+var async = require("async");
 
-var Site = require("./Site");
-var SitesSchema = require("../schemas/sites");
-var Error = require("../../errors/src/Error");
+var Employee = require("./Employee"),
+    EmployeeSchema = require("../schemas/employees"),
+    Error = require("../../errors/src/Error");
 
-module.exports = class SiteFactory {
+module.exports = class EmployeeFactory {
 
     constructor() {}
 
-    //we pass in site of type Site and callback
-    static createSite(newObj, callback) {
-        var site = new SitesSchema();
+    //we pass in query Obj and callback
+    static getCount(queryObj, callback) {
 
-        if (newObj.name) {
-            site.name = newObj.name;
-        } else {
-            return callback(new Error("SIA001"));
+        var query = {
+            provider: queryObj.provider
+        };
+        if (queryObj.search) {
+            query = {
+                email: {
+                    $regex: new RegExp(queryObj.search, "i")
+                }
+            };
         }
-        if (newObj.clientId) {
-            site.clientId = newObj.clientId;
-        } else {
-            return callback(new Error("SIA002"));
+        if (queryObj.name) {
+            query = {
+                "name.first": {
+                    $regex: new RegExp(queryObj.name.first, "i")
+                }
+            };
         }
-        if (newObj.clientSecret) {
-            site.clientSecret = newObj.clientSecret;
-        } else {
-            return callback(new Error("SIA002"));
+        if (queryObj.email) {
+            query = {
+                "email": {
+                    $regex: new RegExp(queryObj.email, "i")
+                }
+            };
         }
-        site.status = newObj.status || "created";
-
-        site.save(function(err, cbSite) {
+        if (queryObj.status) {
+            query.status = queryObj.status;
+        }
+        EmployeeSchema.count(query, function(err, count) {
             if (err) {
-                callback(new Error("DBA001", err.message));
+                callback(new Error("DBA002", err.message));
             } else {
-                callback(null, new Site(cbSite));
+                callback(null, {count:count});
             }
         });
-    }
+    };
 
-    static updateSite(updateObj, callback) {
-        SitesSchema.findById(updateObj.id).exec(function(err, site) {
+    //we pass in new Obj Site and callback
+    static createEmployee(newObj, callback) {
+        var newEmployee = new EmployeeSchema();
+
+        if (!newObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        } else {
+            newEmployee.provider = newObj.provider;
+        }
+        if (newObj.name) {
+            newEmployee.name = newObj.name;
+        } else {
+            return callback(new Error("EMPLOYEE001"));
+        }
+
+        newEmployee.title = newObj.title;
+        newEmployee.email = newObj.email;
+        if (newObj.password) {
+            newEmployee.password = newEmployee.generateHash(newObj.password);
+        }
+        newEmployee.phone = newObj.phone;
+        newEmployee.status = newObj.status || "created";
+
+        async.series([
+                function(cb) {
+                    if (newObj.email) {
+                        //check if e mail already exists
+                        EmployeeSchema.findOne({
+                            provider: newObj.provider,
+                            email: newObj.email
+                        }).exec(function(err, foundEmployee) {
+                            if (err) {
+                                return cb(new Error("DBA002", err.message));
+                            } else if (foundEmployee) {
+                                return cb(new Error("EMPLOYEE007"));
+                            } else {
+                                return cb(null);
+                            }
+                        });
+                    } else {
+                        cb(null);
+                    }
+                }
+            ],
+            function(err, results) {
+                if (err) {
+                    return callback(err);
+                } else {
+                    newEmployee.save(function(err, cbEmployee) {
+                        if (err) {
+                            callback(new Error("DBA001", err.message));
+                        } else {
+                            callback(null, new Employee(cbEmployee));
+                        }
+                    });
+                }
+            });
+    };
+
+    static updateEmployeeProfile(updateObj, callback) {
+        if (!updateObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+        if (!updateObj.name) {
+            return callback(new Error("EMPLOYEE001"));
+        }
+        EmployeeSchema.findOne({
+            provider: updateObj.provider,
+            _id: updateObj.employeeId
+        }).select("-password.value").exec(function(err, employee) {
             if (err) {
-                return callback(new Error("DBA003", err.message));
-            } else if (!site) {
-                return callback(new Error("SIA003", updateObj.id));
+                callback(new Error("DBA003", err.message));
+            } else if (!employee) {
+                callback(new Error("EMPLOYEE002", updateObj.employeeId));
             } else {
                 if (updateObj.name) {
-                    site.name = updateObj.name;
+                    employee.name = updateObj.name;
                 }
-                if (updateObj.clientId) {
-                    site.clientId = updateObj.clientId;
+                if (updateObj.title) {
+                    employee.title = updateObj.title;
                 }
-                if (updateObj.clientSecret) {
-                    site.clientSecret = updateObj.clientSecret;
+                if (updateObj.phone) {
+                    employee.phone = updateObj.phone;
                 }
                 if (updateObj.status) {
-                    site.status = updateObj.status;
+                    employee.status = updateObj.status;
                 }
 
-                site.save(function(err, cbSite) {
+                async.series([
+                        function(cb) {
+                            if (updateObj.email) {
+                                employee.email = updateObj.email;
+                                if (updateObj.email != employee.email) {
+                                    //check if e mail already exists
+                                    EmployeeSchema.findOne({
+                                        provider: updateObj.provider,
+                                        email: updateObj.email
+                                    }).exec(function(err, foundEmployee) {
+                                        if (err) {
+                                            cb(new Error("DBA002", err.message));
+                                        } else if (foundEmployee) {
+                                            return cb(new Error("EMPLOYEE007"));
+                                        } else {
+                                            return cb(null);
+                                        }
+                                    });
+                                } else {
+                                    return cb(null);
+                                }
+                            } else {
+                                return cb(null);
+                            }
+
+                        }
+                    ],
+                    function(err, results) {
+                        if (err) {
+                            return callback(err);
+                        } else {
+                            employee.save(function(err, cbEmployee) {
+                                if (err) {
+                                    callback(new Error("DBA003", err.message));
+                                } else {
+                                    callback(null, new Employee(cbEmployee));
+                                }
+                            });
+                        }
+                    });
+            }
+        });
+    };
+
+    static updateEmployeePassword(updateObj, callback) {
+        if (!updateObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+        if (updateObj.password) {
+            return callback(new Error("EMPLOYEE003"));
+        }
+        EmployeeSchema.findOne({
+            provider: updateObj.provider,
+            _id: updateObj.employeeId
+        }).exec(function(err, employee) {
+            if (err) {
+                callback(new Error("DBA003", err.message));
+            } else if (!employee) {
+                callback(new Error("EMPLOYEE002", updateObj.employeeId));
+            } else {
+                employee.password = employee.generateHash(updateObj.password);
+                employee.save(function(err, cbEmployee) {
                     if (err) {
                         callback(new Error("DBA003", err.message));
                     } else {
-                        callback(null, new Site(cbSite));
+                        callback(null, new Employee(cbEmployee));
                     }
                 });
             }
         });
-    }
+    };
 
-    static deleteSite(siteId, callback) {
-        SitesSchema.findById(siteId).exec(function(err, site) {
+
+    static deleteEmployee(deleteObj, callback) {
+        if (!deleteObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+
+        EmployeeSchema.findOne({
+            provider: deleteObj.provider,
+            _id: deleteObj.employeeId
+        }).exec(function(err, employee) {
             if (err) {
-                return callback(new Error("DBA004", err.message));
-            } else if (!site) {
-                return callback(new Error("SIA003", siteId));
+                callback(new Error("DBA004", err.message));
+            } else if (!employee) {
+                callback(new Error("EMPLOYEE002", deleteObj.employeeId));
             } else {
-                site.remove(function(err, cbSite) {
+                employee.remove(function(err) {
                     if (err) {
                         callback(new Error("DBA004", err.message));
                     } else {
@@ -87,36 +233,67 @@ module.exports = class SiteFactory {
                 });
             }
         });
-    }
+    };
 
-    static findSiteById(id, callback) {
-        SitesSchema.findById(id).select("-clientSecret").exec(function(err, site) {
+    static authenticateEmployee(params, callback) {
+        if (!params.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+        if (!params.email) {
+            return callback(new Error("EMPLOYEE004"));
+        }
+        if (!params.password) {
+            return callback(new Error("EMPLOYEE005"));
+        }
+
+        var query = {
+            provider: params.provider,
+            "email": {
+                $regex: new RegExp(params.email, "i")
+            }
+        };
+        EmployeeSchema.findOne(query, function(err, employee) {
             if (err) {
                 callback(new Error("DBA002", err.message));
+            } else if (!employee) {
+                callback(new Error("EMPLOYEE002", params.email));
+            } else if (!employee.validPassword(params.password)) {
+                callback(new Error("EMPLOYEE006"));
             } else {
-                callback(null, new Site(site));
+                delete employee.password;
+                callback(null, new Employee(employee));
             }
         });
-    }
+    };
 
-    static findSiteByClientIdSecret(obj, callback) {
-        SitesSchema.findOne({
-            clientId: obj.clientId,
-            clientSecret: obj.clientSecret
-        }).select("-clientSecret").exec(function(err, site) {
+    static findEmployeeById(params, callback) {
+        if (!params.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+
+        EmployeeSchema.findOne({
+            _id: params.id,
+            provider: params.provider
+        }).select("-passsword.value").exec(function(err, employee) {
             if (err) {
                 callback(new Error("DBA002", err.message));
+            } else if (!employee) {
+                callback(new Error("EMPLOYEE002", params.id));
             } else {
-                callback(null, new Site(site));
+                callback(null, new Employee(employee));
             }
         });
-    }
+    };
 
-    static findSite(params, callback) {
+    static findEmployee(params, callback) {
+        if (!params.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+
         var select = {};
         if (params.include) {
             var include = params.include.split(",");
-            for (var i = 0; i < include.length && include[i] != "clientSecret"; i++) {
+            for (var i = 0; i < include.length; i++) {
                 select[include[i]] = 1;
             }
         } else if (params.exclude) {
@@ -131,7 +308,9 @@ module.exports = class SiteFactory {
             };
         }
 
-        var query = {};
+        var query = {
+            provider: params.provider
+        };
         var paginate = {};
         var sort = {};
         paginate.paginate = params.paginate != "false";
@@ -141,8 +320,22 @@ module.exports = class SiteFactory {
 
         if (params.search) {
             query = {
-                name: {
+                "name.first": {
                     $regex: new RegExp(params.search, "i")
+                }
+            };
+        }
+        if (params.name) {
+            query = {
+                "name.first": {
+                    $regex: new RegExp(params.name.first, "i")
+                }
+            };
+        }
+        if (params.email) {
+            query = {
+                "email": {
+                    $regex: new RegExp(params.email, "i")
                 }
             };
         }
@@ -150,26 +343,21 @@ module.exports = class SiteFactory {
             query.status = params.status;
         }
 
-        var schemaQuery = SitesSchema.find(query).select(select);
+        var schemaQuery = EmployeeSchema.find(query).select(select);
 
         if (paginate.paginate) {
             schemaQuery.limit(paginate.perPage).skip(paginate.perPage * (paginate.page - 1));
         }
 
-        schemaQuery.sort(sort).exec(function(err, sites) {
+        schemaQuery.sort(sort).exec(function(err, employee) {
             if (err) {
                 callback(new Error("DBA002", err.message));
             } else {
-                callback(null, sites.map(function(s) {
-                    return new Site(s);
+                callback(null, employee.map(function(s) {
+                    return new Employee(s)
                 }));
             }
         });
-    }
-
-    static generateTimeHash(str) {
-        var newStr = str + new Date().getTime() + Math.floor(Math.random() * 1000000);
-        return md5(newStr);
-    }
+    };
 
 };

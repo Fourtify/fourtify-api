@@ -1,13 +1,12 @@
 "use strict";
 var crypto = require('crypto');
 var moment = require('moment');
-var AccessTokenStaff = require("./AccessToken");
-var RefreshTokenStaff = require("./RefreshToken");
+var AccessToken = require("./AccessToken");
+var RefreshToken = require("./RefreshToken");
 var AuthenticationFactory = require("./AuthenticationFactory");
-var accessTokensStaffSchema = require("../schemas/accessTokens");
-var refreshTokensStaffSchema = require("../schemas/refreshTokens");
-var accessTokensCustomersSchema = require("../schemas/accessTokensCustomers");
-var SitesSchema = require('../../sites/schemas/sites');
+var accessTokensSchema = require("../schemas/accessTokens");
+var refreshTokensSchema = require("../schemas/refreshTokens");
+var providersSchema = require('../../providers/schemas/providers');
 var Error = require("../../errors/src/Error");
 
 
@@ -29,45 +28,35 @@ module.exports = class AuthenticationFactory {
         });
     }
 
-    static createAccessTokenStaff(tokenObj, callback) {
-        var accessTokenStaff = new accessTokensStaffSchema();
+    static createAccessToken(tokenObj, callback) {
+        var accessToken = new accessTokensSchema();
 
-        if (tokenObj.staff) {
-            accessTokenStaff.staff = tokenObj.staff;
+        if (tokenObj.employee) {
+            accessToken.employee = tokenObj.employee;
         } else {
             return callback(new Error("AUA006"));
         }
-        if (tokenObj.site) {
-            accessTokenStaff.site = tokenObj.site;
+        if (tokenObj.provider) {
+            accessToken.provider = tokenObj.provider;
         } else {
             return callback(new Error("AUA008"));
-        }
-        if (tokenObj.userAgent) {
-            accessTokenStaff.userAgent = tokenObj.userAgent;
-        } else {
-            return callback(new Error("AUA009"));
-        }
-        if (tokenObj.ip) {
-            accessTokenStaff.ip = tokenObj.ip;
-        } else {
-            return callback(new Error("AUA010"));
         }
 
         var expires = new Date();
         expires.setSeconds(expires.getSeconds() + AuthenticationFactory.getAccessTokenLifeTime());
 
-        accessTokenStaff.expires = expires;
+        accessToken.expires = expires;
 
         AuthenticationFactory.generateToken(function(err, token) {
             if (err) {
                 callback(err);
             } else {
-                accessTokenStaff.value = token;
-                accessTokenStaff.save(function(err, cbToken) {
+                accessToken.value = token;
+                accessToken.save(function(err, cbToken) {
                     if (err) {
                         callback(new Error("DBA001", err.message));
                     } else {
-                        callback(null, new AccessTokenStaff(cbToken));
+                        callback(null, new AccessToken(cbToken));
                     }
                 });
             }
@@ -75,80 +64,60 @@ module.exports = class AuthenticationFactory {
     }
 
 
-    static createRefreshTokenStaff(tokenObj, callback) {
-        var refreshTokenStaff = new refreshTokensStaffSchema();
+    static createRefreshToken(tokenObj, callback) {
+        var refreshToken = new refreshTokensStaffSchema();
 
-        if (tokenObj.staff) {
-            refreshTokenStaff.staff = tokenObj.staff;
+        if (tokenObj.employee) {
+            refreshToken.employee = tokenObj.employee;
         } else {
             return callback(new Error("AUA006"));
         }
-        if (tokenObj.site) {
-            refreshTokenStaff.site = tokenObj.site;
+        if (tokenObj.provider) {
+            refreshToken.provider = tokenObj.provider;
         } else {
             return callback(new Error("AUA008"));
-        }
-        if (tokenObj.userAgent) {
-            refreshTokenStaff.userAgent = tokenObj.userAgent;
-        } else {
-            return callback(new Error("AUA009"));
-        }
-        if (tokenObj.ip) {
-            refreshTokenStaff.ip = tokenObj.ip;
-        } else {
-            return callback(new Error("AUA010"));
         }
 
         var expires = new Date();
         expires.setSeconds(expires.getSeconds() + AuthenticationFactory.getRefreshTokenLifeTime());
 
-        refreshTokenStaff.expires = expires;
+        refreshToken.expires = expires;
 
         AuthenticationFactory.generateToken(function(err, token) {
             if (err) {
                 callback(err);
             } else {
-                refreshTokenStaff.value = token;
-                refreshTokenStaff.save(function(err, cbToken) {
+                refreshToken.value = token;
+                refreshToken.save(function(err, cbToken) {
                     if (err) {
                         callback(new Error("DBA001", err.message));
                     } else {
-                        callback(null, new RefreshTokenStaff(cbToken));
+                        callback(null, new RefreshToken(cbToken));
                     }
                 });
             }
         });
     }
 
-    static createAccessTokenFromRefreshStaff(tokenObj, callback) {
-        var accessTokenStaff = new accessTokensStaffSchema();
+    static createAccessTokenFromRefresh(tokenObj, callback) {
+        var accessToken = new accessTokensSchema();
 
         if (!tokenObj.value) {
             return callback(new Error("AUA011"));
         }
-        if (tokenObj.site) {
-            accessTokenStaff.site = tokenObj.site;
+        if (tokenObj.provider) {
+            accessToken.provider = tokenObj.provider;
         } else {
             return callback(new Error("AUA008"));
-        }
-        if (tokenObj.userAgent) {
-            accessTokenStaff.userAgent = tokenObj.userAgent;
-        } else {
-            return callback(new Error("AUA009"));
-        }
-        if (tokenObj.ip) {
-            accessTokenStaff.ip = tokenObj.ip;
-        } else {
-            return callback(new Error("AUA010"));
         }
 
         var expires = new Date();
         expires.setSeconds(expires.getSeconds() + AuthenticationFactory.getAccessTokenLifeTime());
 
-        accessTokenStaff.expires = expires;
+        accessToken.expires = expires;
 
         //check refresh token
-        refreshTokensStaffSchema.findOne({
+        refreshTokensSchema.findOne({
             value: tokenObj.value
         }).exec(function(err, refreshToken) {
             if (err) {
@@ -160,22 +129,18 @@ module.exports = class AuthenticationFactory {
             else if (moment(refreshToken.expires).isBefore(moment()) || moment(refreshToken.expires).isSame(moment())) {
                 callback(new Error("AUA013"));
             }
-            //unable to validate refresh token
-            else if (tokenObj.userAgent != refreshToken.userAgent || tokenObj.ip != refreshToken.ip ||
-                String(tokenObj.site) != String(refreshToken.site)) {
-                callback(new Error("AUA014"));
-            } else {
-                accessTokenStaff.staff = refreshToken.staff;
+            else {
+                accessToken.employee = refreshToken.employee;
                 AuthenticationFactory.generateToken(function(err, token) {
                     if (err) {
                         callback(err);
                     } else {
-                        accessTokenStaff.value = token;
-                        accessTokenStaff.save(function(err, cbToken) {
+                        accessToken.value = token;
+                        accessToken.save(function(err, cbToken) {
                             if (err) {
                                 callback(new Error("DBA001", err.message));
                             } else {
-                                callback(null, new AccessTokenStaff(cbToken));
+                                callback(null, new AccessToken(cbToken));
                             }
                         });
                     }

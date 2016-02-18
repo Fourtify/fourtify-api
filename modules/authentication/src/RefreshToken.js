@@ -1,7 +1,7 @@
 "use strict";
 
 var Provider = require("../../providers/src/Provider");
-var Employee = require("../../employee/src/Employee");
+var Employee = require("../../employees/src/Employee");
 
 module.exports = class RefreshToken {
 
