@@ -92,7 +92,7 @@ router.put('/:providerId', function(req, res) {
 // DELETE - /providers
 // =========================================================================
 // deletes a provider
-router.put('/:providerId', function(req, res) {
+router.delete('/:providerId', function(req, res) {
     ProviderFactory.deleteProvider(req.params.providerId, function(err) {
         if (err) {
             res.status(500).send(err);
