@@ -26,7 +26,7 @@ var queueSchema = mongoose.Schema({
             default: Date.now
         }
     },
-    //TODO: order?
+    position: Number
 }, {
     id: true,
     collection: "queue"

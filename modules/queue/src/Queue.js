@@ -1,12 +1,15 @@
 "use strict";
 
 var Provider = require("../../providers/src/Provider");
+var Visitor = require("../../visitors/src/Visitor");
+var Appointment = require("../../appointments/src/Appointment");
 
 module.exports = class Queue {
 
     constructor(q){
         //if empty
         if (!q || Object.keys(q).length === 0) {
+            this.id = String(q);
             this.isInDatabase = false;
             this.isPopulated = false;
         }
@@ -19,8 +22,10 @@ module.exports = class Queue {
         //if an object was passed in
         else if (q && (typeof q == "object" || q instanceof Object)) {
             if (q && q._id) {
+                this.id = q.id;
                 this.isInDatabase = true;
             } else if (q && q.id) {
+                this.id = q.id;
                 this.isInDatabase = true;
             }
             if (q && q.provider) {
@@ -32,11 +37,10 @@ module.exports = class Queue {
             if (q && q.appointment) {
                 this.appointment = q.appointment;
             }
-            /* TODO:
-            if (q && q.order) {
-                this.order = q.order;
+            if (q && q.position) {
+                this.position = q.position;
             }
-             */
+
             this.isPopulated = true;
         }
         //if nothing was passed in
@@ -51,6 +55,34 @@ module.exports = class Queue {
     }
     get id() {
         return this._id || "";
+    }
+
+    set provider(s) {
+        this._provider = s instanceof Provider ? s : new Provider(s);
+    }
+    get provider() {
+        return this._provider || new Provider();
+    }
+
+    set appointment(s) {
+        this._appointment = s instanceof Appointment ? s : new Appointment(s);
+    }
+    get appointment() {
+        return this._appointment|| new Appointment();
+    }
+
+    set visitor(s) {
+        this._visitor = s instanceof Visitor ? s : new Visitor(s);
+    }
+    get visitor() {
+        return this._visitor || new Visitor();
+    }
+
+    set position(s){
+        this._position = s
+    }
+    get position(){
+        return this._position;
     }
 
     set isPopulated(b) {

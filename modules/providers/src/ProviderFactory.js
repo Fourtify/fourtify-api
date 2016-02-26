@@ -17,17 +17,17 @@ module.exports = class ProviderFactory {
         if (newObj.name) {
             provider.name = newObj.name;
         } else {
-            return callback(new Error("SIA001"));
+            return callback(new Error("PROVIDER001"));
         }
         if (newObj.clientId) {
             provider.clientId = newObj.clientId;
         } else {
-            return callback(new Error("SIA002"));
+            return callback(new Error("PROVIDER002"));
         }
         if (newObj.clientSecret) {
             provider.clientSecret = newObj.clientSecret;
         } else {
-            return callback(new Error("SIA002"));
+            return callback(new Error("PROVIDER002"));
         }
         provider.status = newObj.status || "created";
 
@@ -45,7 +45,7 @@ module.exports = class ProviderFactory {
             if (err) {
                 return callback(new Error("DBA003", err.message));
             } else if (!provider) {
-                return callback(new Error("SIA003", updateObj.id));
+                return callback(new Error("PROVIDER003", updateObj.id));
             } else {
                 if (updateObj.name) {
                     provider.name = updateObj.name;
@@ -76,7 +76,7 @@ module.exports = class ProviderFactory {
             if (err) {
                 return callback(new Error("DBA004", err.message));
             } else if (!provider) {
-                return callback(new Error("SIA003", providerId));
+                return callback(new Error("PROVIDER003", providerId));
             } else {
                 provider.remove(function(err, cbProvider) {
                     if (err) {

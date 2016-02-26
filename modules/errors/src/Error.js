@@ -91,6 +91,17 @@ module.exports = class Error {
                 this.msg = "Unable to validate information on Access Token";
                 break;
 
+            // QUEUE
+            case "Q001":
+                this.msg = "Visitor is required";
+                break;
+            case "Q002":
+                this.msg = "Appointment is required";
+                break;
+            case "Q003":
+                this.msg = "Queue does not exist:" + optParam1;
+                break;
+
             // EMPLOYEE
             case "EMPLOYEE001":
                 this.msg = "Name is required";
