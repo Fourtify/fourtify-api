@@ -22,5 +22,5 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 
 Step 1.
 
-
+[[https://github.com/Fourtify/fourtify-api/develop/readme_images/step1.png|alt=octocat]]
 
