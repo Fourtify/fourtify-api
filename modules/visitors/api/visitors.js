@@ -56,7 +56,7 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
     }
 
     if (!req.body.name) {
-        return res.status(500).send(new Error("??"));
+        return res.status(500).send(new Error("VISITOR001"));
     }
 
     VisitorFactory.createVisitor({
@@ -75,26 +75,26 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
 });
 
 // =========================================================================
-// PUT - /visitor/:visitorId/profile
+// PUT - /visitor/:visitorId
 // =========================================================================
-// Update profile elements: basically anything except password
-router.put('/:visitorId/profile', AuthMiddleware.authenticate(), function(req, res) {
+// Update profile elements
+router.put('/:visitorId', AuthMiddleware.authenticate(), function(req, res) {
 
     if (!req.provider) {
         return res.status(500).send(new Error("PROVIDER004"));
     }
 
     if (!req.body.name) {
-        return res.status(500).send(new Error("??"));
+        return res.status(500).send(new Error("VISITOR001"));
     }
 
-    VisitorFactory.updateVisitorProfile({
+    VisitorFactory.updateVisitor({
         provider: req.provider.id,
         visitorId: req.params.visitorId,
         name: req.body.name,
         email: req.body.email,
         phone: req.body.phone,
-        status: req.body.status,
+        status: req.body.status
     }, function(err, data) {
         if (err) {
             res.status(500).send(err);

@@ -113,6 +113,29 @@ module.exports = class Error {
             case "EMPLOYEE007":
                 this.msg = "Employee email already exists";
                 break;
+
+            // VISITOR
+            case "VISITOR001":
+                this.msg = "Name is required";
+                break;
+            case "VISITOR002":
+                this.msg = "Visitor does not exist: " + optParam1;
+                break;
+            case "VISITOR003":
+                this.msg = "Password is required";
+                break;
+            case "VISITOR004":
+                this.msg = "Unable to authenticate without email";
+                break;
+            case "VISITOR005":
+                this.msg = "Unable to authenticate without password";
+                break;
+            case "VISITOR006":
+                this.msg = "Invalid password";
+                break;
+            case "VISITOR007":
+                this.msg = "Visitor email already exists";
+                break;
             
 
             default:
