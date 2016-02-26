@@ -15,3 +15,13 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 
 ```
 8. `npm start`
+
+
+
+// --- Postman Oauth Steps --- //
+
+Step 1.
+
+//[[https://github.com/username/repository/blob/master/img/octocat.png|alt=octocat]]
+[[https://github.com/Fourtify/fourtify-api/blob/develop/readme_images/step1.png|alt=octocat]]
+
