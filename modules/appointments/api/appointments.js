@@ -28,7 +28,10 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             page: req.query.page,
             sortBy: req.query.sortBy,
             search: req.query.search,
-            status: req.query.status
+            visitor: req.query.visitor,
+            status: req.query.status,
+            start: req.query.start,
+            end: req.query.end
         }, function(err, data) {
             if (err) {
                 res.status(500).send(err);
