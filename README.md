@@ -20,8 +20,34 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 
 // --- Postman Oauth Steps --- //
 
-Step 1.
+Step 1. 
+Set to POST, URL = http://127.0.0.1:3001/authentication/token
+In Headers add: 
+        Header = Authorization      Value = Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=
+        (dont hit send yet)
+![alt tag](http://i65.tinypic.com/98bmnm.png)
 
-//[[https://github.com/username/repository/blob/master/img/octocat.png|alt=octocat]]
-[[https://github.com/Fourtify/fourtify-api/blob/develop/readme_images/step1.png|alt=octocat]]
+Step 2.
+In Body:
+        select: x-www-form-urlencoded
+        add:
+        Key = grant_type               Value = password
+        Key = email                    Value = carl@salonfrontdesk.com
+        Key = password                 Value = 123456
+        (hit send now)
+![alt tag](http://i66.tinypic.com/1676q1x.png)
 
+Step 3.
+        Copy accessToken _value
+        Use this token to make API calls. Congrats, bro.
+![alt tag](http://i64.tinypic.com/i54yvt.png)
+
+Step 4.
+        Test your token with a providers call.
+        Set to GET, Url = http://127.0.0.1:3001/providers
+        Header = Authorization         Value = Bearer(space)(access token)
+                                       ex. Bearer 00774359cc9253f553806d0cc90ffc9fcef81092
+![alt tag](http://i68.tinypic.com/2wcjmgz.png)
+
+
+You just made an API call. Now test/make stuff.
