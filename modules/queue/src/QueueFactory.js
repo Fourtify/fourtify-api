@@ -1,14 +1,32 @@
 "use strict";
 
+var async = require("async");
+
 var Queue = require("./Queue"),
     QueueSchema = require("../schemas/queue"),
     Error = require("../../errors/src/Error");
 
-module.exports = class QueueFactory{
+module.exports = class QueueFactory {
 
     constructor() {}
 
-    static createQueue(newObj, callback){
+    //we pass in query Obj and callback
+    static getCount(queryObj, callback) {
+
+        var query = {
+            provider: queryObj.provider
+        };
+        QueueSchema.count(query, function(err, count) {
+            if (err) {
+                callback(new Error("DBA002", err.message));
+            } else {
+                callback(null, {count:count});
+            }
+        });
+    };
+
+    //we pass in new Obj Site and callback
+    static createQueue(newObj, callback) {
         var newQueue = new QueueSchema();
 
         if (!newObj.provider) {
@@ -16,77 +34,77 @@ module.exports = class QueueFactory{
         } else {
             newQueue.provider = newObj.provider;
         }
-
         if (newObj.visitor) {
             newQueue.visitor = newObj.visitor;
         } else {
             return callback(new Error("Q001"));
         }
 
-        if (newObj.appointment){
-            newQueue.appointment = newObj.appointment;
-        } else{
-            return callback(new Error("Q002"))
-        }
+        newQueue.appointment = newObj.appointment;
+        newQueue.position = newObj.position;
 
-
-
-        newQueue.order = newObj.order;
-
-        //TODO: async series?
-
-
-
-
-
-
-    };
-
-    static updateQueue(updateObj, callback){
-        if(!updateObj.provider){
-            return callback(new Error("PROVIDER004"));
-        }
-
-        QueueSchema.findById(updateObj.id).exec(function(err, queue){
+        newQueue.save(function(err, cbQueue) {
             if (err) {
-                return callback(new Error("DBA003", err.message));
-            } else if (!queue) {
-                return callback(new Error("Q003", updateObj.id));
-            } else{
-                if(updateObj.visitors){
-                    queue.visitors = updateObj.visitors;
-                }
-                if(updateObj.providers){
-                    queue.providers = updateObj.providers;
-                }
-                if(updateObj.appointments){
-                    queue.appointments = updateObj.appointments;
-                }
-                if(updateObj.position){
-                    queue.position = updateObj.position;
-                }
-
-                //TODO: Async series?
+                callback(new Error("DBA001", err.message));
+            } else {
+                callback(null, new Queue(cbQueue));
             }
         });
     };
 
-    static deleteQueue(deleteObj, callback){
-        if(!deleteObj.provider) {
-            return callback(new error("PROVIDER004"));
+    static updateQueue(updateObj, callback) {
+        if (!updateObj.provider) {
+            return callback(new Error("PROVIDER004"));
         }
+        if (!updateObj.visitor) {
+            return callback(new Error("Q001"));
+        }
+
+        if (updateObj.appointment) {
+            queue.appointment = updateObj.appointment;
+        }
+        if (updateObj.position) {
+            queue.position = updateObj.position;
+        }
+
         QueueSchema.findOne({
-            provider:deleteObj.provider
-        }).exec(function(err, queue){
-            if(err){
+            provider: updateObj.provider,
+            _id: updateObj.queueId
+        }).exec(function(err, queue) {
+            if (err) {
+                callback(new Error("DBA003", err.message));
+            }
+            else {
+                queue.save(function(err, cbQueue) {
+                    if (err) {
+                        callback(new Error("DBA003", err.message));
+                    } else {
+                        callback(null, new Queue(cbQueue));
+                    }
+                });
+            }
+        });
+    };
+
+
+    static deleteQueue(deleteObj, callback) {
+        if (!deleteObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+
+        QueueSchema.findOne({
+            provider: deleteObj.provider,
+            _id: deleteObj.queueId
+        }).exec(function(err, queue) {
+            if (err) {
                 callback(new Error("DBA004", err.message));
-            } else if(!queue){
-                callback(new Error("Q003", deleteObj.queue));
-            } else{
-                queue.remove(function(err){
+            } else if (!queue) {
+                callback(new Error("Q002", deleteObj.queueId));
+            } else {
+                queue.remove(function(err) {
                     if (err) {
                         callback(new Error("DBA004", err.message));
-                    } else{
+                    } else {
                         callback(null);
                     }
                 });
@@ -106,15 +124,15 @@ module.exports = class QueueFactory{
             if (err) {
                 callback(new Error("DBA002", err.message));
             } else if (!queue) {
-                callback(new Error("Q003", params.id));
+                callback(new Error("Q002", params.id));
             } else {
                 callback(null, new Queue(queue));
             }
         });
     };
 
-    static findQueue(params, callback){
-        if(!params.provider){
+    static findQueue(params, callback) {
+        if (!params.provider) {
             return callback(new Error("PROVIDER004"));
         }
 
@@ -146,12 +164,30 @@ module.exports = class QueueFactory{
         paginate.page = params.page ? params.page : 1;
         sort[params.sortBy ? params.sortBy : "name"] = params.sort == -1 ? -1 : 1;
 
-        if (params.order) {
+        //@todo come back and do necessary calls for finding elements in a queue
+        if (params.search) {
             query = {
-                "order": {
-                    $regex: new RegExp(params.order, "i")
+                "name.first": {
+                    $regex: new RegExp(params.search, "i")
                 }
             };
+        }
+        if (params.name) {
+            query = {
+                "name.first": {
+                    $regex: new RegExp(params.name.first, "i")
+                }
+            };
+        }
+        if (params.email) {
+            query = {
+                "email": {
+                    $regex: new RegExp(params.email, "i")
+                }
+            };
+        }
+        if (params.status) {
+            query.status = params.status;
         }
 
         var schemaQuery = QueueSchema.find(query).select(select);
@@ -169,7 +205,6 @@ module.exports = class QueueFactory{
                 }));
             }
         });
-
     };
 
-}
+};
