@@ -89,6 +89,11 @@ module.exports = class ProviderFactory {
         });
     }
 
+    /**
+     * Find provider with clientId
+     * @param id
+     * @param callback
+     */
     static findProviderById(id, callback) {
         ProvidersSchema.findById(id).select("-clientSecret").exec(function(err, provider) {
             if (err) {

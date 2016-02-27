@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 //@todo modules that we will be implementing
-//app.use('/settings', require('./modules/settings/api/settings.js'));
+app.use('/settings', require('./modules/settings/api/settings.js'));
 app.use('/providers', require('./modules/providers/api/providers.js'));
 app.use('/authentication', require('./modules/authentication/api/authentication.js'));
 app.use('/employees', require('./modules/employees/api/employees.js'));
