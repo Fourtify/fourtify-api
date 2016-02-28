@@ -98,7 +98,10 @@ module.exports = class ProviderFactory {
         ProvidersSchema.findById(id).select("-clientSecret").exec(function(err, provider) {
             if (err) {
                 callback(new Error("DBA002", err.message));
-            } else {
+            } else if(!provider){
+                callback(new Error("PROVIDER003", id));
+            }
+            else {
                 callback(null, new Provider(provider));
             }
         });

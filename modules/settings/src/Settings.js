@@ -1,8 +1,9 @@
 "use strict";
 
 
-
 module.exports = class Settings {
+
+
 
     /**
      *
@@ -19,26 +20,23 @@ module.exports = class Settings {
 
         //if an object with provider information was passed in
         //need to parse the info tho
+
         else if (input && (typeof input == "object" || input instanceof Object)) {
             if (input && input._id) {
-                this.id = input._id;
+                this._id = input._id;
                 this.isInDatabase = true;
-            } else if (input && input.id) {
-                this.id = input.id;
+            } else if (input && input.providerId) {
+                this.providerId = input.providerId;
+                this.isInDatabase = true;
+            } else if (input && input.primaryColor) {       //TODO: Use theme object, move colors/logo to it
+                this.primaryColor = input.primaryColor;
+                this.isInDatabase = true;
+            } else if (input && input.secondaryColor) {
+                this.secondaryColor = input.secondaryColor;
                 this.isInDatabase = true;
             }
-            if (input && input.name) {
-                this.name = input.name;
-            }
-            if (input && input.clientId) {
-                this.clientId = input.clientId;
-            }
-            if (input && input.clientSecret) {
-                this.clientSecret = input.clientSecret;
-            }
-            if (input && input.status) {
-                this.status = input.status;
-            }
+
+
             this.isPopulated = true;
         }
 
@@ -49,26 +47,46 @@ module.exports = class Settings {
         }
     }
 
+
     set id(i) {
         this._id = i;
     }
+
     get id() {
         return this._id || "";
     }
-    set clientId(c) {
-        this._clientId = c;
+
+    set providerId(c) {
+        this.providerId = c;
     }
 
-    get clientId() {
-        return this._clientId || null;
+    get providerId() {
+        return this.providerId;
     }
 
-    set provider(s) {
-        this._provider = s instanceof Provider ? s : new Provider(s);
+
+    set primaryColor(c) {
+        this.primaryColor = c;
     }
 
-    get provider() {
-        return this._provider || new Provider();
+    get primaryColor() {
+        return this.primaryColor;
+    }
+
+    set secondaryColor(c) {
+        this.secondaryColor = c;
+    }
+
+    get secondaryColor() {
+        return this.secondaryColor;
+    }
+
+    set logo(c) {
+        this.logo = c;
+    }
+
+    get logo() {
+        return this.logo;
     }
 
     set isPopulated(b) {
@@ -82,6 +100,7 @@ module.exports = class Settings {
     set isInDatabase(b) {
         this._isInDatabase = b;
     }
+
     get isInDatabase() {
         return this._isInDatabase || false;
     }
