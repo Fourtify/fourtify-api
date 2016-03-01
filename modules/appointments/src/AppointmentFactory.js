@@ -1,84 +1,131 @@
 "use strict";
 
-var md5 = require("md5");
+var async = require("async");
 
-var Appointment = require("./Appointment");
-var AppointmentSchema = require("../schemas/Appointment");
-var Error = require("../../errors/src/Error");
+var Appointment = require("./Appointment"),
+    AppointmentSchema = require("../schemas/appointments"),
+    Error = require("../../errors/src/Error");
 
 module.exports = class AppointmentFactory {
 
     constructor() {}
 
-    //we pass in provider of type Provider and callback
+    //we pass in query Obj and callback
+    static getCount(queryObj, callback) {
+
+        var query = {
+            provider: queryObj.provider
+        };
+        if (queryObj.search) {
+            query = {
+                email: {
+                    $regex: new RegExp(queryObj.search, "i")
+                }
+            };
+        }
+        if (queryObj.visitor) {
+            query.visitor = queryObj.visitor;
+        }
+        if (queryObj.start) {
+            query.start = queryObj.start;
+        }
+        if (queryObj.end) {
+            query.end = queryObj.end;
+        }
+        if (queryObj.status) {
+            query.status = queryObj.status;
+        }
+        AppointmentSchema.count(query, function(err, count) {
+            if (err) {
+                callback(new Error("DBA002", err.message));
+            } else {
+                callback(null, {count:count});
+            }
+        });
+    };
+
+    //we pass in new Obj Site and callback
     static createAppointment(newObj, callback) {
-        var appointment = new AppointmentSchema();
+        var newAppointment = new AppointmentSchema();
 
-        if (newObj.name) {
-            provider.name = newObj.name;
+        if (!newObj.provider) {
+            return callback(new Error("PROVIDER004"));
         } else {
-            return callback(new Error("SIA001"));
+            newAppointment.provider = newObj.provider;
         }
-        if (newObj.clientId) {
-            provider.clientId = newObj.clientId;
+        if (newObj.visitor) {
+            newAppointment.name = newObj.name;
         } else {
-            return callback(new Error("SIA002"));
+            return callback(new Error("APPOINTMENT001"));
         }
-        if (newObj.clientSecret) {
-            provider.clientSecret = newObj.clientSecret;
-        } else {
-            return callback(new Error("SIA002"));
-        }
-        provider.status = newObj.status || "created";
 
-        provider.save(function(err, cbProvider) {
+        newAppointment.start = newObj.start;
+        newAppointment.end = newObj.end;
+        newAppointment.status = newObj.status || "created";
+
+        newAppointment.save(function(err, cbAppointment) {
             if (err) {
                 callback(new Error("DBA001", err.message));
             } else {
-                callback(null, new Provider(cbProvider));
+                callback(null, new Appointment(cbAppointment));
             }
         });
-    }
+    };
 
-    static updateProvider(updateObj, callback) {
-        ProvidersSchema.findById(updateObj.id).exec(function(err, provider) {
+    static updateAppointment(updateObj, callback) {
+        if (!updateObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+        if (!updateObj.visitor) {
+            return callback(new Error("APPOINTMENT001"));
+        }
+        AppointmentSchema.findOne({
+            provider: updateObj.provider,
+            _id: updateObj.appointmentId
+        }).exec(function(err, appointment) {
             if (err) {
-                return callback(new Error("DBA003", err.message));
-            } else if (!provider) {
-                return callback(new Error("SIA003", updateObj.id));
-            } else {
-                if (updateObj.name) {
-                    provider.name = updateObj.name;
+                callback(new Error("DBA003", err.message));
+            }
+            else {
+                if (updateObj.visitor) {
+                    appointment.visitor = updateObj.visitor;
                 }
-                if (updateObj.clientId) {
-                    provider.clientId = updateObj.clientId;
+                if (updateObj.start) {
+                    appointment.start = updateObj.start;
                 }
-                if (updateObj.clientSecret) {
-                    provider.clientSecret = updateObj.clientSecret;
+                if (updateObj.end) {
+                    appointment.end = updateObj.end;
                 }
                 if (updateObj.status) {
-                    provider.status = updateObj.status;
+                    appointment.status = updateObj.status;
                 }
-
-                provider.save(function(err, cbProvider) {
+                appointment.save(function(err, cbAppointment) {
                     if (err) {
                         callback(new Error("DBA003", err.message));
                     } else {
-                        callback(null, new Provider(cbProvider));
+                        callback(null, new Appointment(cbAppointment));
                     }
                 });
             }
         });
-    }
+    };
 
-    static deleteProvider(providerId, callback) {
-        ProvidersSchema.findById(providerId).exec(function(err, provider) {
+
+    static deleteAppointment(deleteObj, callback) {
+        if (!deleteObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+
+        AppointmentSchema.findOne({
+            provider: deleteObj.provider,
+            _id: deleteObj.appointmentId
+        }).exec(function(err, appointment) {
             if (err) {
-                return callback(new Error("DBA004", err.message));
-            } else if (!provider) {
-                return callback(new Error("SIA003", providerId));
+                callback(new Error("DBA004", err.message));
+            } else if (!appointment) {
+                callback(new Error("APPOINTMENT002", deleteObj.appointmentId));
             } else {
-                provider.remove(function(err, cbProvider) {
+                appointment.remove(function(err) {
                     if (err) {
                         callback(new Error("DBA004", err.message));
                     } else {
@@ -87,36 +134,37 @@ module.exports = class AppointmentFactory {
                 });
             }
         });
-    }
+    };
 
-    static findProviderById(id, callback) {
-        ProvidersSchema.findById(id).select("-clientSecret").exec(function(err, provider) {
+
+    static findAppointmentById(params, callback) {
+        if (!params.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
+
+        AppointmentSchema.findOne({
+            _id: params.id,
+            provider: params.provider
+        }).exec(function(err, appointment) {
             if (err) {
                 callback(new Error("DBA002", err.message));
+            } else if (!appointment) {
+                callback(new Error("APPOINTMENT002", params.id));
             } else {
-                callback(null, new Provider(provider));
+                callback(null, new Appointment(appointment));
             }
         });
-    }
+    };
 
-    static findProviderByClientIdSecret(obj, callback) {
-        ProvidersSchema.findOne({
-            clientId: obj.clientId,
-            clientSecret: obj.clientSecret
-        }).select("-clientSecret").exec(function(err, provider) {
-            if (err) {
-                callback(new Error("DBA002", err.message));
-            } else {
-                callback(null, new Provider(provider));
-            }
-        });
-    }
+    static findAppointment(params, callback) {
+        if (!params.provider) {
+            return callback(new Error("PROVIDER004"));
+        }
 
-    static findProvider(params, callback) {
         var select = {};
         if (params.include) {
             var include = params.include.split(",");
-            for (var i = 0; i < include.length && include[i] != "clientSecret"; i++) {
+            for (var i = 0; i < include.length; i++) {
                 select[include[i]] = 1;
             }
         } else if (params.exclude) {
@@ -126,12 +174,14 @@ module.exports = class AppointmentFactory {
             }
         } else {
             select = {
-                name: 1,
+                visitor: 1,
                 status: 1
             };
         }
 
-        var query = {};
+        var query = {
+            provider: params.provider
+        };
         var paginate = {};
         var sort = {};
         paginate.paginate = params.paginate != "false";
@@ -141,35 +191,36 @@ module.exports = class AppointmentFactory {
 
         if (params.search) {
             query = {
-                name: {
+                "name.first": {
                     $regex: new RegExp(params.search, "i")
                 }
             };
+        }
+        if (params.start) {
+            query.start = params.start;
+        }
+        if (params.end) {
+            query.end = params.end;
         }
         if (params.status) {
             query.status = params.status;
         }
 
-        var schemaQuery = ProvidersSchema.find(query).select(select);
+        var schemaQuery = AppointmentSchema.find(query).select(select);
 
         if (paginate.paginate) {
             schemaQuery.limit(paginate.perPage).skip(paginate.perPage * (paginate.page - 1));
         }
 
-        schemaQuery.sort(sort).exec(function(err, providers) {
+        schemaQuery.sort(sort).exec(function(err, appointment) {
             if (err) {
                 callback(new Error("DBA002", err.message));
             } else {
-                callback(null, providers.map(function(s) {
-                    return new Provider(s);
+                callback(null, appointment.map(function(s) {
+                    return new Appointment(s)
                 }));
             }
         });
-    }
-
-    static generateTimeHash(str) {
-        var newStr = str + new Date().getTime() + Math.floor(Math.random() * 1000000);
-        return md5(newStr);
-    }
+    };
 
 };

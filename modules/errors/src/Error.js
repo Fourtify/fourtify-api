@@ -91,6 +91,17 @@ module.exports = class Error {
                 this.msg = "Unable to validate information on Access Token";
                 break;
 
+            // QUEUE
+            case "Q001":
+                this.msg = "Visitor is required";
+                break;
+            case "Q002":
+                this.msg = "Appointment is required";
+                break;
+            case "Q003":
+                this.msg = "Queue does not exist:" + optParam1;
+                break;
+
             // EMPLOYEE
             case "EMPLOYEE001":
                 this.msg = "Name is required";
@@ -136,7 +147,14 @@ module.exports = class Error {
             case "VISITOR007":
                 this.msg = "Visitor email already exists";
                 break;
-            
+
+            // APPOINTMENT
+            case "APPOINTMENT001":
+                this.msg = "Visitor is required";
+                break;
+            case "APPOINTMENT002":
+                this.msg = "appointment does not exist: " + optParam1;
+                break;
 
             default:
                 this.msg = "Unknown error";

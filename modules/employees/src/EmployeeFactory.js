@@ -82,7 +82,7 @@ module.exports = class EmployeeFactory {
                         }).exec(function(err, foundEmployee) {
                             if (err) {
                                 return cb(new Error("DBA002", err.message));
-                            } else if (foundEmployee) {
+                            } else if (!foundEmployee) {
                                 return cb(new Error("EMPLOYEE007"));
                             } else {
                                 return cb(null);
