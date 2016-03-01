@@ -1,7 +1,7 @@
 "use strict";
 
 var Provider = require("../../providers/src/Provider"),
-    Visitor = require("../../visitors/src/Visitors");
+    Visitor = require("../../visitors/src/Visitor");
 
 module.exports = class Appointment {
 

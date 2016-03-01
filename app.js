@@ -33,9 +33,9 @@ app.use('/settings', require('./modules/settings/api/settings.js'));
 app.use('/providers', require('./modules/providers/api/providers.js'));
 app.use('/authentication', require('./modules/authentication/api/authentication.js'));
 app.use('/employees', require('./modules/employees/api/employees.js'));
-//app.use('/appointments', require('./modules/appointments/api/appointments.js'));
-//app.use('/queue', require('./modules/queue/api/queue.js'));
-//app.use('/queue/history', require('./modules/queue/api/queueHistory.js'));
+app.use('/appointments', require('./modules/appointments/api/appointments.js'));
+app.use('/queue', require('./modules/queue/api/queue.js'));
+app.use('/queue/history', require('./modules/queue/api/queueHistory.js'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
