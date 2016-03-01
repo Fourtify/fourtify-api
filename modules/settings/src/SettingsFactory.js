@@ -6,7 +6,7 @@ var Settings = require("./Settings");
 var SettingsSchema = require("../schemas/settings");
 var Error = require("../../errors/src/Error");
 
-module.exports = class ProviderFactory {
+module.exports = class SettingsFactory {
 
     constructor() {
     }
@@ -21,164 +21,69 @@ module.exports = class ProviderFactory {
      * @param callback
      * @returns {*}
      */
+
+
+
     static createSettings(newObj, callback) {
-
-        console.log(JSON.stringify(newObj));
-
-        SettingsSchema.findById({providerId : newObj}).exec(function(err, settingRet) {
+        var newSettings = new SettingsSchema();
 
 
-            if (err) {
-                return callback(new Error("DBA003", err.message));
-            } else if (!settingRet) {
-                //NOT FOUND
+        console.log("newObj: "+JSON.stringify(newObj.provider));
 
-                var setting = new SettingsSchema();
-
-                setting.theme.primaryColor = "BBDEFB";
-                setting.theme.secondaryColor = "2196F3";
-                setting.logo = "http://get-logos.com/wp-content/uploads/2013/04/0008-cloudtech.jpg"; //place holder
-                setting.provider = newObj.providerId;
-                setting.timeZone = "America/New York";
+        if (!newObj.provider) {
+            return callback(new Error("PROVIDER004"));
+        } else {
+            newSettings.provider = newObj.provider;
+        }
 
 
-                setting.save(function (err, cbSetting) {
-                    if (err) {
-                        callback(new Error("Error saving", err));
-                    } else {
-                        console.log("setting saved: " + cbSetting);
-                        callback(null, new Settings(cbSetting));
-                    }
-                });
+        newSettings.theme.primaryColor = "BBDEFB";
+        newSettings.theme.secondaryColor = "2196F3";
+        newSettings.logo = "http://get-logos.com/wp-content/uploads/2013/04/0008-cloudtech.jpg"; //place holder
 
-                //return callback(new Error("SIA003", newObj.id));
-            } else {
-                //FOUND
+        newSettings.timeZone = "America/New York";
+        newSettings.status = newObj.status || "created";
 
-                return callback(null, "done");
+        async.series([
+                function(cb) {
+                    //if (newObj.email) {
+                        //check if settings already exists
+                        SettingsSchema.findOne({
+                            provider: newObj.provider
 
-
-            }
-        });
-
-
-
-
-/*
-
-        //does setting exist? provider: newObj.providerId
-        var schemaQuery = SettingsSchema.find( { provider: "56c675d8777d8d0d14fac96b" } );
-
-        schemaQuery.exec(function (err, providers) {
-
-            console.log("providers: " + JSON.stringify(newObj));
-
-            if (err) {
-                console.log("in error, no entry: "+ newObj.providerId);
-                var setting = new SettingsSchema();
-
-                setting.theme.primaryColor = "BBDEFB";
-                setting.theme.secondaryColor = "2196F3";
-                setting.logo = "http://get-logos.com/wp-content/uploads/2013/04/0008-cloudtech.jpg"; //place holder
-                setting.provider = newObj.providerId;
-                setting.timeZone = "America/New York";
-
-
-                setting.save(function (err, cbSetting) {
-                    if (err) {
-                        callback(new Error("Error saving", err));
-                    } else {
-                        console.log("setting saved: " + cbSetting);
-                        callback(null, new Settings(cbSetting));
-                    }
-                });
-
-
-            } else {
-                console.log("found setting: " + JSON.stringify(providers));
-                callback(null, providers);
-            }
-        });
-
-
-*/
-
-/*
-        SettingsSchema.findById( { id: newObj.providerId } ).exec(function(err, setting) {
-            console.log("setting: "+JSON.stringify(setting));
-            if (err) {
-                return callback(new Error("DBA003", err.message));
-            } else if (!setting) {
-                return callback(new Error("SIA003", newObj.providerId));
-            } else {
-                console.log("newObj: "+JSON.stringify(newObj));
-                console.log("setting: "+JSON.stringify(setting));
-
-                if (newObj.name) {
-                    setting.name = newObj.name;
+                        }).exec(function(err, foundSettings) {
+                            console.log("foundSettings: "+JSON.stringify(foundSettings));
+                            if (err) {
+                                return cb(new Error("DBA002", err.message));
+                            } else if (!foundSettings) {
+                                return cb(new Error("EMPLOYEE007"));
+                            } else {
+                                return cb(null);
+                            }
+                        });
+                    //} else {
+                    //    cb(null);
+                    //}
                 }
-                if (newObj.clientId) {
-                    setting.clientId = newObj.clientId;
+            ],
+            function(err, results) {
+                if (err) {
+                    return callback(err);
+                } else {
+                    newSettings.save(function(err, cbEmployee) {
+                        if (err) {
+                            callback(new Error("DBA001", err.message));
+                        } else {
+                            callback(null, new Settings(cbEmployee));
+                        }
+                    });
                 }
-                if (newObj.clientSecret) {
-                    setting.clientSecret = newObj.clientSecret;
-                }
-                if (newObj.status) {
-                    setting.status = newObj.status;
-                }
-
-                setting.primaryColor = "#BBDEFB";
-                setting.secondaryColor = "#2196F3";
-
-                setting.save(function(err, cbProvider) {
-                    if (err) {
-                        //(new Error("DBA003", err.message));
-                    } else {
-                        //callback(null, new Provider(cbProvider));
-                    }
-                });
-            }
-        });
-*/
-
-        /**
-         * Find provider associated with given Id
-         * @type {Promise|Array|{index: number, input: string}}
-         */
-
-/*
-        var thisSettings = SettingsSchema.find( {providerId: newObj.providerId} ).exec(function(err, settingsResult) {
-            console.log("err: "+JSON.stringify(err));
-            console.log("found: "+JSON.stringify(settingsResult));
-            if (err) {
-                console.log("error find settings: "+JSON.stringify(settingsResult));
-                callback(new Error("DBA002", err.message));
-            } else {
-                console.log("found: "+JSON.stringify(settingsResult));
-
-            }
-        });
+            });
+    };
 
 
-*/
-
-        //var settings = new SettingsSchema();
 
 
-        /**
-         * Save new settings object into db
-         */
-        /*
-        settings.save(function(err, cbProvider) {
-            if (err) {
-                callback(new Error("DBA001", err.message));
-            } else {
-                callback(null, new Settings(cbProvider));
-            }
-        });
-*/
-
-    }
 
 
 
@@ -237,7 +142,7 @@ module.exports = class ProviderFactory {
 
 
 
-    static findSettings(params, callback) {
+    static findSettingsById(params, callback) {
 
         var schemaQuery = SettingsSchema.find( {_id: params} );
 

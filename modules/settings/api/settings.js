@@ -18,7 +18,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     console.log("query.id: " +req.query.id);
 
     if (req.query.id) {
-        SettingsFactory.findSettings(req.query.id, function(err, data) {
+        SettingsFactory.findSettingsById(req.query.id, function(err, data) {
             if (err) {
                 res.status(500).send(err);
             } else {
@@ -38,17 +38,29 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
 router.post('/', function(req, res) {
 
 
-    console.log(JSON.stringify(req.body));
+    console.log("req: "+JSON.stringify(req.body.provider));
 
-    if (!req.body.providerId) {
-        return res.status(500).send(new Error("PROVIDER001"));
+
+    if (!req.body.provider) {
+        return res.status(500).send(new Error("PROVIDER004"));
     }
 
-
-
-
     SettingsFactory.createSettings({
-        providerId: req.body.providerId
+        provider: req.body.provider
+
+    }, function(err, data) {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.status(200).send(data);
+        }
+    });
+
+
+
+/*
+    SettingsFactory.createSettings({
+        providerId: req.body.providerId,
         //,logo: reg.body.logoUrl
 
     }, function(err, data) {
@@ -61,7 +73,7 @@ router.post('/', function(req, res) {
             res.status(200).send(data);
         }
     });
-
+*/
 
 
 });

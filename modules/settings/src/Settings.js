@@ -25,8 +25,8 @@ module.exports = class Settings {
             if (input && input._id) {
                 this._id = input._id;
                 this.isInDatabase = true;
-            } else if (input && input.providerId) {
-                this.providerId = input.providerId;
+            } else if (input && input.provider) {
+                this.provider = input.provider;
                 this.isInDatabase = true;
             } else if (input && input.primaryColor) {       //TODO: Use theme object, move colors/logo to it
                 this.primaryColor = input.primaryColor;
@@ -56,37 +56,36 @@ module.exports = class Settings {
         return this._id || "";
     }
 
-    set providerId(c) {
-        this.providerId = c;
+    set provider(s) {
+        this._provider = s instanceof Provider ? s : new Provider(s);
     }
-
-    get providerId() {
-        return this.providerId;
+    get provider() {
+        return this._provider || new Provider();
     }
 
 
     set primaryColor(c) {
-        this.primaryColor = c;
+        this._primaryColor = c;
     }
 
     get primaryColor() {
-        return this.primaryColor;
+        return this._primaryColor;
     }
 
     set secondaryColor(c) {
-        this.secondaryColor = c;
+        this._secondaryColor = c;
     }
 
     get secondaryColor() {
-        return this.secondaryColor;
+        return this._secondaryColor;
     }
 
     set logo(c) {
-        this.logo = c;
+        this._logo = c;
     }
 
     get logo() {
-        return this.logo;
+        return this._logo;
     }
 
     set isPopulated(b) {
