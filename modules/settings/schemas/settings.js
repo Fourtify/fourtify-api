@@ -12,7 +12,7 @@ var settingsSchema = mongoose.Schema({
         type: Schema.ObjectId,
         ref: "providers"
     },
-    timeZone: String,
+    timezone: String,
     logo: String,
     timeStamp: {
         created: {
