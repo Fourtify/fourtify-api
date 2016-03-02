@@ -12,32 +12,46 @@ module.exports = class ProviderFactory {
 
     //we pass in provider of type Provider and callback
     static createProvider(newObj, callback) {
-        var provider = new ProvidersSchema();
+        var newProvider = new ProvidersSchema();
 
         if (newObj.name) {
-            provider.name = newObj.name;
+            newProvider.name = newObj.name;
         } else {
             return callback(new Error("PROVIDER001"));
         }
+        if (newObj.domain) {
+            newProvider.domain = newObj.domain;
+        } else {
+            return callback(new Error("PROVIDER006"));
+        }
         if (newObj.clientId) {
-            provider.clientId = newObj.clientId;
+            newProvider.clientId = newObj.clientId;
         } else {
             return callback(new Error("PROVIDER002"));
         }
         if (newObj.clientSecret) {
-            provider.clientSecret = newObj.clientSecret;
+            newProvider.clientSecret = newObj.clientSecret;
         } else {
             return callback(new Error("PROVIDER002"));
         }
-        provider.status = newObj.status || "created";
+        newProvider.status = newObj.status || "created";
 
-        provider.save(function(err, cbProvider) {
+        ProvidersSchema.findOne({domain: newObj.domain}).exec(function(err, provider) {
             if (err) {
-                callback(new Error("DBA001", err.message));
+                return callback(new Error("DBA003", err.message));
+            } else if (provider) {
+                return callback(new Error("PROVIDER005", newObj.domain));
             } else {
-                callback(null, new Provider(cbProvider));
+                newProvider.save(function(err, cbProvider) {
+                    if (err) {
+                        callback(new Error("DBA001", err.message));
+                    } else {
+                        callback(null, new Provider(cbProvider));
+                    }
+                });
             }
         });
+
     }
 
     static updateProvider(updateObj, callback) {

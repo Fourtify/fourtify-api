@@ -34,6 +34,12 @@ module.exports = class Error {
             case "PROVIDER004":
                 this.msg = "Provider is required";
                 break;
+            case "PROVIDER005":
+                this.msg = "Domain already exists: " + optParam1;
+                break;
+            case "PROVIDER006":
+                this.msg = "Domain is required";
+                break;
 
             // AUTHENTICATION
             case "AUA001":

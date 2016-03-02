@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 var providersSchema = mongoose.Schema({
 
     name: String,
+    domain: String,
     clientId: String,
     clientSecret: String,
     status: String,

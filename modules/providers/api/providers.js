@@ -5,6 +5,7 @@ var moment = require('moment');
 var router = express.Router();
 
 var ProviderFactory = require('../src/ProviderFactory');
+var EmployeeFactory = require('../../employees/src/EmployeeFactory');
 var Error = require("../../errors/src/Error");
 var AuthMiddleware = require("../../authentication/src/AuthMiddleware");
 
@@ -48,13 +49,14 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
 // Creates a new provider
 router.post('/', function(req, res) {
 
-    if (!req.body.name) {
+    if (!req.body.provider.name) {
         return res.status(500).send(new Error("PROVIDER001"));
     }
     var clientId = ProviderFactory.generateTimeHash(req.body.name);
 
     ProviderFactory.createProvider({
-        name: req.body.name,
+        name: req.body.provider.name,
+        domain: req.body.provider.domain,
         clientId: clientId,
         clientSecret: ProviderFactory.generateTimeHash(clientId),
         status: req.body.status
@@ -62,7 +64,26 @@ router.post('/', function(req, res) {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.status(200).send(data);
+            EmployeeFactory.createEmployee({
+                provider: data._id,
+                name: req.body.employee.name,
+                title: req.body.employee.title,
+                email: req.body.employee.email,
+                password: req.body.employee.password,
+                phone: req.body.employee.phone,
+                status: req.body.employee.status
+            }, function(err, data2) {
+                if (err) {
+                    ProviderFactory.deleteProvider(data._id, function(err) {
+                    });
+                    res.status(500).send(err);
+                } else {
+                    res.status(200).send({
+                        provider: data,
+                        employee: data2
+                    });
+                }
+            });
         }
     });
 });
