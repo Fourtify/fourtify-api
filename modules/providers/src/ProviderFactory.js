@@ -146,7 +146,6 @@ module.exports = class ProviderFactory {
                 callback(new Error("PROVIDER003", obj));
             }
             else {
-                console.log(provider);
                 callback(null, new Provider(provider));
             }
         });
