@@ -141,7 +141,12 @@ module.exports = class ProviderFactory {
         }).select("-clientSecret").exec(function(err, provider) {
             if (err) {
                 callback(new Error("DBA002", err.message));
-            } else {
+            }
+            else if(!provider){
+                callback(new Error("PROVIDER003", obj));
+            }
+            else {
+                console.log(provider);
                 callback(null, new Provider(provider));
             }
         });
