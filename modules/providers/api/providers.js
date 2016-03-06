@@ -13,7 +13,8 @@ var AuthMiddleware = require("../../authentication/src/AuthMiddleware");
 // GET - /providers
 // =========================================================================
 // Get providers based on query parameters. If id is passed in, 1 result is returned, otherwise an array is returned
-router.get('/', AuthMiddleware.authenticate(), function(req, res) {
+//@todo, authenticate the app, not the user
+router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
     if (req.query.id) {
         ProviderFactory.findProviderById(req.query.id, function(err, data) {
             if (err) {
@@ -22,7 +23,16 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
                 res.status(200).send(data);
             }
         });
-    } else {
+    }
+    else if (req.query.domain) {
+        ProviderFactory.findProviderByDomain(req.query.domain, function(err, data) {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.status(200).send(data);
+            }
+        });
+    }else {
         ProviderFactory.findProvider({
             include: req.query.include,
             exclude: req.query.exclude,

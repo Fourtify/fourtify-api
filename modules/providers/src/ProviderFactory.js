@@ -20,7 +20,7 @@ module.exports = class ProviderFactory {
             return callback(new Error("PROVIDER001"));
         }
         if (newObj.domain) {
-            newProvider.domain = newObj.domain;
+            newProvider.domain = newObj.domain.toLowerCase();
         } else {
             return callback(new Error("PROVIDER006"));
         }
@@ -114,6 +114,19 @@ module.exports = class ProviderFactory {
                 callback(new Error("DBA002", err.message));
             } else if(!provider){
                 callback(new Error("PROVIDER003", id));
+            }
+            else {
+                callback(null, new Provider(provider));
+            }
+        });
+    }
+
+    static findProviderByDomain(domain, callback) {
+        ProvidersSchema.findOne({domain:domain.toLowerCase()}).exec(function(err, provider) {
+            if (err) {
+                callback(new Error("DBA002", err.message));
+            } else if(!provider){
+                callback(new Error("PROVIDER007", domain));
             }
             else {
                 callback(null, new Provider(provider));

@@ -40,6 +40,9 @@ module.exports = class Error {
             case "PROVIDER006":
                 this.msg = "Domain is required";
                 break;
+            case "PROVIDER007":
+                this.msg = "Domain does not exists: " + optParam1;
+                break;
 
             // AUTHENTICATION
             case "AUA001":
