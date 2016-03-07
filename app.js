@@ -36,6 +36,7 @@ app.use('/employees', require('./modules/employees/api/employees.js'));
 app.use('/appointments', require('./modules/appointments/api/appointments.js'));
 app.use('/queue', require('./modules/queue/api/queue.js'));
 app.use('/queue/history', require('./modules/queue/api/queueHistory.js'));
+app.use('/visitors', require('./modules/visitors/api/visitors.js'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

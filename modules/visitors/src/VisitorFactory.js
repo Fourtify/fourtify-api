@@ -50,6 +50,7 @@ module.exports = class VisitorFactory {
     };
 
     //we pass in new Obj Site and callback
+    //Need: Provider, Name
     static createVisitor(newObj, callback) {
         var newVisitor = new VisitorSchema();
 
@@ -58,6 +59,11 @@ module.exports = class VisitorFactory {
         } else {
             newVisitor.provider = newObj.provider;
         }
+
+        console.log("newObj.name: "+newObj.name);
+        console.log("newObj.name.first: "+newObj.name.first);
+        console.log("newObj.name.last: "+newObj.name.last);
+
         if (newObj.name) {
             newVisitor.name = newObj.name;
         } else {

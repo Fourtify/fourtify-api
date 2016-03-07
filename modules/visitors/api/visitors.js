@@ -18,6 +18,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             if (err) {
                 res.status(500).send(err);
             } else {
+                console.log("up here: "+JSON.stringify(data));
                 res.status(200).send(data);
             }
         });
@@ -39,6 +40,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             if (err) {
                 res.status(500).send(err);
             } else {
+                console.log("down here: "+JSON.stringify(data));
                 res.status(200).send(data);
             }
         });

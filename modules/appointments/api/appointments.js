@@ -73,6 +73,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
 // Create a appointment
 router.post('/', AuthMiddleware.authenticate(), function(req, res) {
 
+    console.log(JSON.stringify("visitor: "+req.body.visitor));
     if (!req.provider) {
         return res.status(500).send(new Error("PROVIDER004"));
     }
@@ -128,7 +129,7 @@ router.put('/:appointmentId', AuthMiddleware.authenticate(), function(req, res) 
 
 
 // =========================================================================
-// DELETE - /appointment/:appointmentId
+// DELETE - /appointments/:appointmentId
 // =========================================================================
 // Delete a appointment.
 router.delete('/:appointmentId', AuthMiddleware.authenticate(), function(req, res) {

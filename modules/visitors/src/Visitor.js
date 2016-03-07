@@ -60,6 +60,7 @@ module.exports = class Visitor {
         return this._provider || new Provider();
     }
 
+
     set name(n) {
         this._name = n instanceof Name ? n : new Name(n);
     }

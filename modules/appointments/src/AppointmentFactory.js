@@ -54,7 +54,7 @@ module.exports = class AppointmentFactory {
             newAppointment.provider = newObj.provider;
         }
         if (newObj.visitor) {
-            newAppointment.name = newObj.name;
+            newAppointment.visitor = newObj.visitor;
         } else {
             return callback(new Error("APPOINTMENT001"));
         }
