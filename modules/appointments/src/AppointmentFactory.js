@@ -175,7 +175,9 @@ module.exports = class AppointmentFactory {
         } else {
             select = {
                 visitor: 1,
-                status: 1
+                status: 1,
+                start: 1,
+                end: 1
             };
         }
 
