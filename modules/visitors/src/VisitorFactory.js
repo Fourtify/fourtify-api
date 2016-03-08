@@ -244,7 +244,8 @@ module.exports = class VisitorFactory {
         } else {
             select = {
                 name: 1,
-                status: 1
+                status: 1,
+                email:1
             };
         }
 
@@ -267,16 +268,13 @@ module.exports = class VisitorFactory {
         }
         if (params.name) {
             query = {
-                "name.first": {
-                    $regex: new RegExp(params.name.first, "i")
-                }
+                "name.first": params.name.first,
+                "name.last": params.name.last
             };
         }
         if (params.email) {
             query = {
-                "email": {
-                    $regex: new RegExp(params.email, "i")
-                }
+                "email": params.email
             };
         }
         if (params.status) {

@@ -202,6 +202,9 @@ module.exports = class AppointmentFactory {
         if (params.end) {
             query.end = params.end;
         }
+        if (params.visitor) {
+            query.visitor = params.visitor;
+        }
         if (params.status) {
             query.status = params.status;
         }
