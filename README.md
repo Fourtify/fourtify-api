@@ -19,11 +19,12 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 
 
 // --- Postman Oauth Steps --- //
+Updated with new admin account
 
 Step 1. 
 Set to POST, URL = http://127.0.0.1:3001/authentication/token
 In Headers add: 
-        Header = Authorization      Value = Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=
+        Header = Authorization      Value = Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6MDc3ZWJmNjUxMjM5MjRjZWM2ZjE1NmE0NGU2OWRjODc=
         (dont hit send yet)
 ![alt tag](http://i65.tinypic.com/98bmnm.png)
 
@@ -32,8 +33,8 @@ In Body:
         select: x-www-form-urlencoded
         add:
         Key = grant_type               Value = password
-        Key = email                    Value = carl@salonfrontdesk.com
-        Key = password                 Value = 123456
+        Key = email                    Value = key006@ucsd.edu
+        Key = password                 Value = qwertyjr
         (hit send now)
 ![alt tag](http://i66.tinypic.com/1676q1x.png)
 
