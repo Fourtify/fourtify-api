@@ -27,6 +27,7 @@ module.exports = class QueueFactory {
 
     //we pass in new Obj Site and callback
     static createQueue(newObj, callback) {
+
         var newQueue = new QueueSchema();
 
         if (!newObj.provider) {
