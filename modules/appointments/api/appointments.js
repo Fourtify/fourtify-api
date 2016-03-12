@@ -30,11 +30,11 @@ router.get('/count', AuthMiddleware.authenticate(), function(req, res) {
 // GET - /appointment
 // =========================================================================
 // Get appointment based on query parameters.
-router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
+router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         AppointmentFactory.findAppointmentById({
             id: req.query.id,
-            provider: req.body.provider || req.provider.id
+            provider: req.provider.id
         }, function(err, data) {
             if (err) {
                 res.status(500).send(err);
@@ -44,7 +44,7 @@ router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
         });
     } else {
         AppointmentFactory.findAppointment({
-            provider: req.body.provider ||req.provider.id,
+            provider: req.provider.id,
             include: req.query.include,
             exclude: req.query.exclude,
             paginate: req.query.paginate,
