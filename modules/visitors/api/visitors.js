@@ -9,12 +9,11 @@ var Error = require("../../errors/src/Error");
 // GET - /visitor
 // =========================================================================
 // Get visitor based on query parameters.
-//@todo change to allow app access instead of user
-router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
+router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         VisitorFactory.findVisitorById({
             id: req.query.id,
-            provider: req.body.provider || req.provider.id
+            provider: req.provider.id
         }, function(err, data) {
             if (err) {
                 res.status(500).send(err);
@@ -25,7 +24,7 @@ router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
         });
     } else {
         VisitorFactory.findVisitor({
-            provider: req.body.provider || req.provider.id,
+            provider: req.provider.id,
             include: req.query.include,
             exclude: req.query.exclude,
             paginate: req.query.paginate,
