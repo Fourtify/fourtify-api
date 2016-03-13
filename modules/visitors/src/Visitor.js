@@ -7,9 +7,12 @@ var Name = require("./../../generics/src/Name"),
 module.exports = class Visitor {
     constructor(u) {
 
-        if (!u || Object.keys(u).length == 0) {
-            this.isInDatabase = false;
+        //if an id was passed in
+        if (typeof u == "string" || u instanceof String || u._bsontype == "ObjectID") {
+            this.id = String(u);
+            this.isInDatabase = true;
             this.isPopulated = false;
+
         } else if (typeof u == "string" || u instanceof String || u._bsontype == "ObjectID") {
             this.isInDatabase = true;
             this.isPopulated = false;
