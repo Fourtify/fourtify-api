@@ -17,6 +17,7 @@ var appointmentsSchema = mongoose.Schema({
     status: String,
     start: Date,        //must be correct format or will error
     end: Date,
+    reason: String,
     timeStamp: {
         created: {
             type: Date,

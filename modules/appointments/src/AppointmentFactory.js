@@ -48,7 +48,7 @@ module.exports = class AppointmentFactory {
     static createAppointment(newObj, callback) {
         var newAppointment = new AppointmentSchema();
 
-        console.log("create start: "+newObj.start);
+        console.log("create reason: "+newObj.reason);
 
 
         if (!newObj.provider) {
@@ -61,7 +61,9 @@ module.exports = class AppointmentFactory {
         } else {
             return callback(new Error("APPOINTMENT001"));
         }
-
+        if (newObj.reason) {
+            newAppointment.reason = newObj.reason;
+        }
 
         newAppointment.start = newObj.start;
         newAppointment.end = newObj.end;
@@ -69,8 +71,6 @@ module.exports = class AppointmentFactory {
 
 
         console.log(JSON.stringify(newAppointment));
-        console.log("start: " +newAppointment.start);
-        console.log("end: "+newAppointment.end);
 
         newAppointment.save(function(err, cbAppointment) {
 
@@ -105,6 +105,9 @@ module.exports = class AppointmentFactory {
                 }
                 if (updateObj.end) {
                     appointment.end = updateObj.end;
+                }
+                if (updateObj.reason) {
+                    appointment.reason = updateObj.reason;
                 }
                 if (updateObj.status) {
                     appointment.status = updateObj.status;

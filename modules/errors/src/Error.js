@@ -165,6 +165,7 @@ module.exports = class Error {
                 this.msg = "appointment does not exist: " + optParam1;
                 break;
 
+
             // SETTINGS
             case "SETTINGS001":
                 this.msg = "Name is required";

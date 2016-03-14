@@ -90,6 +90,7 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
         visitor: req.body.visitor,
         start: req.body.start,
         end: req.body.end,
+        reason: req.body.reason,
         status: req.body.status
     }, function(err, data) {
         if (err) {
@@ -120,6 +121,7 @@ router.put('/:appointmentId', AuthMiddleware.authenticate(), function(req, res) 
         visitor: req.body.visitor,
         start: req.body.start,
         end: req.body.end,
+        reason: req.body.reason,
         status: req.body.status
     }, function(err, data) {
         if (err) {
