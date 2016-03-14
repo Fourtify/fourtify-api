@@ -190,7 +190,8 @@ module.exports = class AppointmentFactory {
                 visitor: 1,
                 status: 1,
                 start: 1,
-                end: 1
+                end: 1,
+                reason: 1
             };
         }
 
@@ -222,6 +223,9 @@ module.exports = class AppointmentFactory {
         }
         if (params.status) {
             query.status = params.status;
+        }
+        if (params.reason) {
+            query.reason = params.reason;
         }
 
         var schemaQuery = AppointmentSchema.find(query).select(select);
