@@ -9,6 +9,7 @@ module.exports = class Appointment {
 
         //if an id was passed in
         if (typeof s == "string" || s instanceof String || s._bsontype == "ObjectID") {
+
             this.id = String(s);
             this.isInDatabase = true;
             this.isPopulated = false;

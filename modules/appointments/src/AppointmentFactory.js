@@ -48,6 +48,9 @@ module.exports = class AppointmentFactory {
     static createAppointment(newObj, callback) {
         var newAppointment = new AppointmentSchema();
 
+        console.log("create start: "+newObj.start);
+
+
         if (!newObj.provider) {
             return callback(new Error("PROVIDER004"));
         } else {
@@ -59,11 +62,18 @@ module.exports = class AppointmentFactory {
             return callback(new Error("APPOINTMENT001"));
         }
 
+
         newAppointment.start = newObj.start;
         newAppointment.end = newObj.end;
         newAppointment.status = newObj.status || "created";
 
+
+        console.log(JSON.stringify(newAppointment));
+        console.log("start: " +newAppointment.start);
+        console.log("end: "+newAppointment.end);
+
         newAppointment.save(function(err, cbAppointment) {
+
             if (err) {
                 callback(new Error("DBA001", err.message));
             } else {
