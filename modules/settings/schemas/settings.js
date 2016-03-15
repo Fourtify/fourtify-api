@@ -13,6 +13,7 @@ var settingsSchema = mongoose.Schema({
         ref: "providers"
     },
     timezone: String,
+    slack: String,
     logo: String,
     timeStamp: {
         created: {

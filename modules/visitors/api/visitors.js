@@ -18,6 +18,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             if (err) {
                 res.status(500).send(err);
             } else {
+                console.log("up here: "+JSON.stringify(data));
                 res.status(200).send(data);
             }
         });
@@ -33,7 +34,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             sortBy: req.query.sortBy,
             search: req.query.search,
             name: req.query.name,
-            email: req.query.email ? req.query.email.value : undefined,
+            email: req.query.email,
             status: req.query.status
         }, function(err, data) {
             if (err) {

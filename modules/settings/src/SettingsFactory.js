@@ -30,6 +30,9 @@ module.exports = class SettingsFactory {
         if (queryObj.logo) {
             query.logo = queryObj.logo;
         }
+        if (queryObj.slack) {
+            query.slack = queryObj.slack;
+        }
         if (queryObj.theme) {
             query.theme = queryObj.theme;
         }
@@ -55,6 +58,7 @@ module.exports = class SettingsFactory {
 
         newSettings.timezone = newObj.timezone;
         newSettings.logo = newObj.logo;
+        newSettings.slack = newObj.slack;
         newSettings.theme = newObj.theme;
 
         newSettings.save(function(err, cbSettings) {
@@ -72,19 +76,22 @@ module.exports = class SettingsFactory {
         }
         
         SettingsSchema.findOne({
-            provider: updateObj.provider,
-            _id: updateObj.settingsId
+            provider: updateObj.provider
         }).exec(function(err, settings) {
             if (err) {
                 callback(new Error("DBA003", err.message));
             } else if (!settings) {
-                callback(new Error("SETTINGS002", updateObj.settingsId));
+                SettingsFactory.createSettings(updateObj, callback);
+                //callback(new Error("SETTINGS002", updateObj.settingsId));
             } else {
                 if (updateObj.timezone) {
                     settings.timezone = updateObj.timezone;
                 }
                 if (updateObj.logo) {
                     settings.logo = updateObj.logo;
+                }
+                if (updateObj.slack) {
+                    settings.slack = updateObj.slack;
                 }
                 if (updateObj.theme) {
                     settings.theme = updateObj.theme;
@@ -168,19 +175,16 @@ module.exports = class SettingsFactory {
         } else {
             select = {
                 provider: 1,
-                theme: 1
+                theme: 1,
+                timezone: 1,
+                logo: 1,
+                slack: 1
             };
         }
 
         var query = {
             provider: params.provider
         };
-        var paginate = {};
-        var sort = {};
-        paginate.paginate = params.paginate != "false";
-        paginate.perPage = params.perPage ? params.perPage : 20;
-        paginate.page = params.page ? params.page : 1;
-        sort[params.sortBy ? params.sortBy : "name"] = params.sort == -1 ? -1 : 1;
 
         if (params.search) {
             query = {
@@ -196,23 +200,20 @@ module.exports = class SettingsFactory {
         if (params.logo) {
             query.logo = params.logo;
         }
+        if (params.slack) {
+            query.slack = params.slack;
+        }
         if (params.theme) {
             query.theme = params.theme;
         }
 
-        var schemaQuery = SettingsSchema.find(query).select(select);
+        var schemaQuery = SettingsSchema.findOne(query);
 
-        if (paginate.paginate) {
-            schemaQuery.limit(paginate.perPage).skip(paginate.perPage * (paginate.page - 1));
-        }
-
-        schemaQuery.sort(sort).exec(function(err, settings) {
+        schemaQuery.exec(function(err, settings) {
             if (err) {
                 callback(new Error("DBA002", err.message));
             } else {
-                callback(null, settings.map(function(s) {
-                    return new Settings(s)
-                }));
+                callback(null, new Settings(settings));
             }
         });
     };

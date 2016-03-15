@@ -9,7 +9,7 @@
         }
     },
     "development": {
-        "host": "ds047095.mongolab.com",
+        "host": "ds047095.mlab.com",
         "db": "fourtify-api-dev",
         "port": "47095",
         "credentials": {
