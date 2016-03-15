@@ -6,28 +6,37 @@
 5. `npm install` or `sudo npm install`
 6. Make a file called ".env" -- `vim .env`
 7. Paste the following content:
-```
 
-EXPRESS_SECRET=FOURTIFY
-NODE_ENV=development
-PORT=3001
-NODE_TLS_REJECT_UNAUTHORIZED=0
 
-```
+    EXPRESS_SECRET=FOURTIFY
+    NODE_ENV=development
+    PORT=3001
+    NODE_TLS_REJECT_UNAUTHORIZED=0
+
+
 8. `npm start`
 
 
 
-// --- Postman Oauth Steps --- //
 
-Step 1. 
+# Mocha Testing Instructions
+1. Right click mocha file in test directory
+2. Select create 'test-**.js'
+3. Hit ok in the dialog
+4. Click run at the top right of the IDE (or use run menu)
+
+    ![alt tag](http://i64.tinypic.com/11tswn9.png)
+
+# Postman Oauth Steps
+
+1. 
 Set to POST, URL = http://127.0.0.1:3001/authentication/token
 In Headers add: 
         Header = Authorization      Value = Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=
         (dont hit send yet)
 ![alt tag](http://i65.tinypic.com/98bmnm.png)
 
-Step 2.
+2. 
 In Body:
         select: x-www-form-urlencoded
         add:
@@ -37,12 +46,12 @@ In Body:
         (hit send now)
 ![alt tag](http://i66.tinypic.com/1676q1x.png)
 
-Step 3.
+3. 
         Copy accessToken _value
         Use this token to make API calls. Congrats, bro.
 ![alt tag](http://i64.tinypic.com/i54yvt.png)
 
-Step 4.
+4. 
         Test your token with a providers call.
         Set to GET, Url = http://127.0.0.1:3001/providers
         Header = Authorization         Value = Bearer(space)(access token)
@@ -51,4 +60,5 @@ Step 4.
 
 
 You just made an API call. Now test/make stuff.
+
 
