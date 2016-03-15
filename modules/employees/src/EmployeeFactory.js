@@ -304,7 +304,10 @@ module.exports = class EmployeeFactory {
         } else {
             select = {
                 name: 1,
-                status: 1
+                status: 1,
+                email: 1,
+                title: 1,
+                phone: 1
             };
         }
 

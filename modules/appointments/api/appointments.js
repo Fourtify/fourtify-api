@@ -27,9 +27,9 @@ router.get('/count', AuthMiddleware.authenticate(), function(req, res) {
 });
 
 // =========================================================================
-// GET - /appointment
+// GET - /appointments
 // =========================================================================
-// Get appointment based on query parameters.
+// Get appointments based on query parameters.
 router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         AppointmentFactory.findAppointmentById({
@@ -53,6 +53,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             sort: req.query.sort,
             sortBy: req.query.sortBy,
             search: req.query.search,
+            populate: req.query.populate,
             visitor: req.query.visitor,
             status: req.query.status,
             start: req.query.start,

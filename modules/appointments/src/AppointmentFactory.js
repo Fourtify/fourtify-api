@@ -234,6 +234,10 @@ module.exports = class AppointmentFactory {
             schemaQuery.limit(paginate.perPage).skip(paginate.perPage * (paginate.page - 1));
         }
 
+        if (params.populate) {
+            schemaQuery.populate(params.populate);
+        }
+
         schemaQuery.sort(sort).exec(function(err, appointment) {
             if (err) {
                 callback(new Error("DBA002", err.message));
