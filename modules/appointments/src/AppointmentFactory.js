@@ -48,22 +48,30 @@ module.exports = class AppointmentFactory {
     static createAppointment(newObj, callback) {
         var newAppointment = new AppointmentSchema();
 
+
         if (!newObj.provider) {
             return callback(new Error("PROVIDER004"));
         } else {
             newAppointment.provider = newObj.provider;
         }
         if (newObj.visitor) {
-            newAppointment.name = newObj.name;
+            newAppointment.visitor = newObj.visitor;
         } else {
             return callback(new Error("APPOINTMENT001"));
+        }
+        if (newObj.reason) {
+            newAppointment.reason = newObj.reason;
         }
 
         newAppointment.start = newObj.start;
         newAppointment.end = newObj.end;
         newAppointment.status = newObj.status || "created";
 
+
+        //console.log(JSON.stringify(newAppointment));
+
         newAppointment.save(function(err, cbAppointment) {
+
             if (err) {
                 callback(new Error("DBA001", err.message));
             } else {
@@ -95,6 +103,9 @@ module.exports = class AppointmentFactory {
                 }
                 if (updateObj.end) {
                     appointment.end = updateObj.end;
+                }
+                if (updateObj.reason) {
+                    appointment.reason = updateObj.reason;
                 }
                 if (updateObj.status) {
                     appointment.status = updateObj.status;
@@ -175,7 +186,10 @@ module.exports = class AppointmentFactory {
         } else {
             select = {
                 visitor: 1,
-                status: 1
+                status: 1,
+                start: 1,
+                end: 1,
+                reason: 1
             };
         }
 
@@ -202,8 +216,14 @@ module.exports = class AppointmentFactory {
         if (params.end) {
             query.end = params.end;
         }
+        if (params.visitor) {
+            query.visitor = params.visitor;
+        }
         if (params.status) {
             query.status = params.status;
+        }
+        if (params.reason) {
+            query.reason = params.reason;
         }
 
         var schemaQuery = AppointmentSchema.find(query).select(select);

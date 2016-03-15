@@ -1,4 +1,6 @@
-var chai = require('chai');
+//var myApp = require('../app.js');
+//var request = require('supertest')(myApp);
+//var chai = require('chai');
 
 var Name = require('../modules/generics/src/Name');
 var Phone = require('../modules/generics/src/Phone');
@@ -81,3 +83,12 @@ describe('Generics', function(){
     });
 });
 
+
+/*
+app.get('/generic', function(req, res){
+    res.send(200, { name: 'generic' });
+});*/
+
+// In order to reach the app from other modules
+// we need to export the express application
+//module.exports.getApp = app;

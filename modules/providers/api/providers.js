@@ -49,10 +49,14 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
 // Creates a new provider
 router.post('/', function(req, res) {
 
+
+    console.log("in provider: "+JSON.stringify(req.body));
+
     if (!req.body.provider.name) {
         return res.status(500).send(new Error("PROVIDER001"));
     }
     var clientId = ProviderFactory.generateTimeHash(req.body.name);
+
 
     ProviderFactory.createProvider({
         name: req.body.provider.name,

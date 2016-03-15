@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({
     limit: '50mb',
     extended: true
 }));
+
 //@todo modules that we will be implementing
 app.use('/settings', require('./modules/settings/api/settings.js'));
 app.use('/providers', require('./modules/providers/api/providers.js'));
@@ -37,12 +38,31 @@ app.use('/appointments', require('./modules/appointments/api/appointments.js'));
 app.use('/queue', require('./modules/queue/api/queue.js'));
 app.use('/queue/history', require('./modules/queue/api/queueHistory.js'));
 
+
+
+
+
+
+//app.use('/tests', require('./test/test-generics.js'));
+
+
+/*
+app.get('/user', function(req, res){
+    res.send(200, { name: 'marcus' });
+});
+*/
+
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
+
+
+
+
 
 // error handlers
 
@@ -69,5 +89,12 @@ app.use(function(err, req, res, next) {
         error: {}
     });*/
 });
+
+
+
+
+
+
+
 
 module.exports = app;

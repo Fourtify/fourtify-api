@@ -3,7 +3,7 @@ var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
 var auth = { 'Authorization': 'Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=', 'Content-Type': 'application/x-www-form-urlencoded' };
-var incorretAuth = { 'Authorization': 'Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=', 'Content-Type': 'application/json' };
+var incorrectAuth = { 'Authorization': 'Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=', 'Content-Type': 'application/json' };
 
 var clientInfo = {
      grant_type: 'password',
@@ -53,7 +53,7 @@ describe("Authentication", function(){
     it("POST Should get err if not x-www-form-urlencoded", function(done){
         request(url)
         .post('/authentication/token')
-        .set(incorretAuth)
+        .set(incorrectAuth)
         .send(clientInfo)
         .end(function(err, res){
             if(err)
