@@ -52,7 +52,7 @@ var badProviderInfo = {
         email: 'donald@trump.com',
         password: '123456',
         title: 'Overlord',
-        phone: "12345"          //Wrong phone format
+        phone: "12345"          //Wrong phone format will cause failure
     }
 };
 
