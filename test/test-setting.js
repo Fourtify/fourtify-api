@@ -25,7 +25,7 @@ describe("Settings Tests", function () {
 // =========================================================================
 // need authentication for tests
 // =========================================================================
-    it("POST Retrieve a token from server", function (done) {
+    it("POST Retrieve an auth token from server", function (done) {
         request(url)
             .post('/authentication/token')
             .set(auth)
@@ -46,11 +46,26 @@ describe("Settings Tests", function () {
             });
     });
 
+// =========================================================================
+//  GET - /settings/count
+// =========================================================================
+    it("Should Get the number of settings for this provider.", function (done) {
+        request(url)
+            .get('/settings/count')
+            .set('Authorization', 'Bearer '+ accessToken)
+            .end(function (err, res) {
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('count');
+                res.body.count.should.be.an.Number();
+                done();
+            });
+    });
 
 // =========================================================================
 // GET - /settings
 // =========================================================================
-    it("Should Get settings based on query parameters..", function (done) {
+    it("Should get all return values", function (done) {
         request(url)
             .get('/settings')
             .set('Authorization', 'Bearer '+ accessToken)
@@ -61,6 +76,7 @@ describe("Settings Tests", function () {
                 res.body.should.have.property('_timezone');
                 res.body.should.have.property('_logo');
                 res.body.should.have.property('_slack');
+
                 res.body.should.have.property('_theme');
                 res.body._theme.should.have.property('primaryColor');
                 res.body._theme.should.have.property('secondaryColor');
@@ -68,23 +84,10 @@ describe("Settings Tests", function () {
             });
     });
 
-    /*
-// =========================================================================
-//  GET - /settings/count
-// =========================================================================
-    it("Should Get the number of settings for this provider.", function (done) {
-        request(url)
-            .get('/settings/count')
-            .end(function (err, res) {
-                res.should.have.property('status', 200);
-                res.should.be.json;
-                res.body.should.have.property('count');
-                res.body.count.should.be.an.Number();
-                done();
-            });
-    });
 
 
+
+/*
 // =========================================================================
 // GET - /settings
 // =========================================================================
