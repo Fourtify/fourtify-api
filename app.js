@@ -7,6 +7,7 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
+
 var mongoose = require('mongoose');
 var configDB = require('./config/database.json')[environment];
 
@@ -40,18 +41,6 @@ app.use('/queue/history', require('./modules/queue/api/queueHistory.js'));
 app.use('/visitors', require('./modules/visitors/api/visitors.js'));
 
 
-
-
-
-
-//app.use('/tests', require('./test/test-generics.js'));
-
-
-/*
-app.get('/user', function(req, res){
-    res.send(200, { name: 'marcus' });
-});
-*/
 
 
 // catch 404 and forward to error handler
