@@ -1,5 +1,6 @@
 "use strict";
 
+var Provider = require("../../providers/src/Provider");
 
 module.exports = class Settings {
 
@@ -32,6 +33,9 @@ module.exports = class Settings {
             }
             if (u && u.logo) {
                 this.logo = u.logo;
+            }
+            if (u && u.slack) {
+                this.slack = u.slack;
             }
             if (u && u.theme) {
                 this.theme = u.theme;
@@ -73,6 +77,14 @@ module.exports = class Settings {
     get logo() {
         return this._logo || "";
     }
+
+    set slack(n) {
+        this._slack = n;
+    }
+    get slack() {
+        return this._slack || "";
+    }
+
 
     set theme(n) {
         this._theme = n;

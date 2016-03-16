@@ -9,6 +9,7 @@ module.exports = class Appointment {
 
         //if an id was passed in
         if (typeof s == "string" || s instanceof String || s._bsontype == "ObjectID") {
+
             this.id = String(s);
             this.isInDatabase = true;
             this.isPopulated = false;
@@ -34,6 +35,9 @@ module.exports = class Appointment {
             }
             if (s && s.end) {
                 this.end = s.end;
+            }
+            if (s && s.reason) {
+                this.reason = s.reason;
             }
             if (s && s.status) {
                 this.status = s.status;
@@ -90,6 +94,12 @@ module.exports = class Appointment {
     }
     get status() {
         return this._status || "";
+    }
+    set reason(s){
+        this._reason = s;
+    }
+    get reason(){
+        return this._reason || "";
     }
 
     set isPopulated(b) {

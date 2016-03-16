@@ -27,14 +27,14 @@ router.get('/count', AuthMiddleware.authenticate(), function(req, res) {
 });
 
 // =========================================================================
-// GET - /appointment
+// GET - /appointments
 // =========================================================================
-// Get appointment based on query parameters.
-router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
+// Get appointments based on query parameters.
+router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         AppointmentFactory.findAppointmentById({
             id: req.query.id,
-            provider: req.body.provider || req.provider.id
+            provider: req.provider.id
         }, function(err, data) {
             if (err) {
                 res.status(500).send(err);
@@ -44,7 +44,7 @@ router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
         });
     } else {
         AppointmentFactory.findAppointment({
-            provider: req.body.provider ||req.provider.id,
+            provider: req.provider.id,
             include: req.query.include,
             exclude: req.query.exclude,
             paginate: req.query.paginate,
@@ -53,6 +53,7 @@ router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
             sort: req.query.sort,
             sortBy: req.query.sortBy,
             search: req.query.search,
+            populate: req.query.populate,
             visitor: req.query.visitor,
             status: req.query.status,
             start: req.query.start,
@@ -73,7 +74,8 @@ router.get('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
 // Create a appointment
 router.post('/', AuthMiddleware.authenticate(), function(req, res) {
 
-    console.log(JSON.stringify("visitor: "+req.body.visitor));
+    //console.log(JSON.stringify("visitor: "+req.body.visitor));
+    console.log("given start: "+req.body.start);
     if (!req.provider) {
         return res.status(500).send(new Error("PROVIDER004"));
     }
@@ -82,11 +84,14 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
         return res.status(500).send(new Error("APPOINTMENT001"));
     }
 
+
+
     AppointmentFactory.createAppointment({
         provider: req.provider.id,
         visitor: req.body.visitor,
         start: req.body.start,
         end: req.body.end,
+        reason: req.body.reason,
         status: req.body.status
     }, function(err, data) {
         if (err) {
@@ -117,6 +122,7 @@ router.put('/:appointmentId', AuthMiddleware.authenticate(), function(req, res) 
         visitor: req.body.visitor,
         start: req.body.start,
         end: req.body.end,
+        reason: req.body.reason,
         status: req.body.status
     }, function(err, data) {
         if (err) {

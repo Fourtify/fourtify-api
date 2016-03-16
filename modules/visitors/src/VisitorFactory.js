@@ -60,10 +60,6 @@ module.exports = class VisitorFactory {
             newVisitor.provider = newObj.provider;
         }
 
-        console.log("newObj.name: "+newObj.name);
-        console.log("newObj.name.first: "+newObj.name.first);
-        console.log("newObj.name.last: "+newObj.name.last);
-
         if (newObj.name) {
             newVisitor.name = newObj.name;
         } else {
@@ -245,7 +241,8 @@ module.exports = class VisitorFactory {
             select = {
                 name: 1,
                 status: 1,
-                email:1
+                email:1,
+                phone:1
             };
         }
 

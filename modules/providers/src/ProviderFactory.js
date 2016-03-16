@@ -35,7 +35,7 @@ module.exports = class ProviderFactory {
             return callback(new Error("PROVIDER002"));
         }
         newProvider.status = newObj.status || "created";
-
+        newProvider.logo = "http://www.logisticleads.com/uploads/default-logo.png";
         ProvidersSchema.findOne({domain: newObj.domain}).exec(function(err, provider) {
             if (err) {
                 return callback(new Error("DBA003", err.message));

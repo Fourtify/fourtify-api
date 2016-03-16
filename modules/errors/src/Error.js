@@ -41,7 +41,7 @@ module.exports = class Error {
                 this.msg = "Domain is required";
                 break;
             case "PROVIDER007":
-                this.msg = "Domain does not exists: " + optParam1;
+                this.msg = "Domain does not exist: " + optParam1;
                 break;
 
             // AUTHENTICATION
@@ -164,6 +164,7 @@ module.exports = class Error {
             case "APPOINTMENT002":
                 this.msg = "appointment does not exist: " + optParam1;
                 break;
+
 
             // SETTINGS
             case "SETTINGS001":

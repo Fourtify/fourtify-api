@@ -23,6 +23,9 @@ module.exports = class Provider {
             if (s && s.name) {
                 this.name = s.name;
             }
+            if (s && s.domain) {
+                this.domain = s.domain;
+            }
             if (s && s.clientId) {
                 this.clientId = s.clientId;
             }
@@ -54,6 +57,13 @@ module.exports = class Provider {
     }
     get name() {
         return this._name || "";
+    }
+
+    set domain(n) {
+        this._domain = n;
+    }
+    get domain() {
+        return this._domain || "";
     }
 
     set clientId(c) {

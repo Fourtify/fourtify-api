@@ -15,6 +15,7 @@ router.get('/count', AuthMiddleware.authenticate(), function(req, res) {
         search: req.query.search,
         timezone: req.query.timezone,
         logo: req.query.logo,
+        slack: req.query.slack,
         theme: req.query.theme
     }, function(err, count) {
         if (err) {
@@ -44,17 +45,11 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     } else {
         SettingsFactory.findSettings({
             provider: req.provider.id,
-            include: req.query.include,
-            exclude: req.query.exclude,
-            paginate: req.query.paginate,
-            perPage: req.query.perPage,
-            page: req.query.page,
-            sort: req.query.sort,
-            sortBy: req.query.sortBy,
             search: req.query.search,
             timezone: req.query.timezone,
             logo: req.query.logo,
-            theme: req.query.theme
+            theme: req.query.theme,
+            slack: req.query.slack
         }, function(err, data) {
             if (err) {
                 res.status(500).send(err);
@@ -83,6 +78,7 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
         provider: req.provider.id,
         timezone: req.body.timezone,
         logo: req.body.logo,
+        slack: req.body.slack,
         theme: req.body.theme
     }, function(err, data) {
         if (err) {
@@ -94,10 +90,10 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
 });
 
 // =========================================================================
-// PUT - /settings/:settingsId
+// PUT - /settings/
 // =========================================================================
 // Update settings elements: basically anything except password
-router.put('/:settingsId', AuthMiddleware.authenticate(), function(req, res) {
+router.put('/', AuthMiddleware.authenticate(), function(req, res) {
 
     if (!req.provider) {
         return res.status(500).send(new Error("PROVIDER004"));
@@ -105,9 +101,9 @@ router.put('/:settingsId', AuthMiddleware.authenticate(), function(req, res) {
 
     SettingsFactory.updateSettings({
         provider: req.provider.id,
-        settingsId: req.params.settingsId,
         timezone: req.body.timezone,
         logo: req.body.logo,
+        slack: req.body.slack,
         theme: req.body.theme
     }, function(err, data) {
         if (err) {

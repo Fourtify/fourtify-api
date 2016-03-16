@@ -29,6 +29,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         QueueFactory.findQueueById({
             id: req.query.id,
+            populate: req.query.populate,
             provider: req.provider.id
         }, function(err, data) {
             if (err) {
@@ -47,6 +48,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             page: req.query.page,
             sort: req.query.sort,
             sortBy: req.query.sortBy,
+            populate: req.query.populate,
             search: req.query.search,
             visitor: req.query.visitor,
             appointment: req.query.appointment
@@ -64,9 +66,9 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
 // POST - /queue
 // =========================================================================
 // Create a queue
-router.post('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
+router.post('/', AuthMiddleware.authenticate(), function(req, res) {
 
-    if (!req.provider && !req.body.provider) {
+    if (!req.provider) {
         return res.status(500).send(new Error("PROVIDER004"));
     }
 
@@ -75,7 +77,7 @@ router.post('/', /*AuthMiddleware.authenticate(),*/ function(req, res) {
     }
 
     QueueFactory.createQueue({
-        provider: req.body.provider || req.provider.id,
+        provider: req.provider.id,
         visitor: req.body.visitor,
         appointment: req.body.appointment,
         position: req.body.position
