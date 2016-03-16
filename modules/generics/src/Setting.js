@@ -29,7 +29,6 @@ module.exports = class Setting {
     get module() {
         return this._module || "";
     }
-
     // _name
     set name(n) {
         this._name = n;
@@ -37,7 +36,6 @@ module.exports = class Setting {
     get name() {
         return this._name || "";
     }
-
     // _description
     set description(d) {
         this._description = d;
@@ -45,7 +43,6 @@ module.exports = class Setting {
     get description() {
         return this._description || "";
     }
-
     // _valid
     set valid(v) {
         this._valid = v;
@@ -53,34 +50,19 @@ module.exports = class Setting {
     get valid() {
         return this._valid || [];
     }
-
     // _value
     set value(v) {
-        if (this.valueIsValid(v)) {
-            this._value = v;
-        }
+        this._value = v;
     }
     get value() {
         return this._value || "";
     }
-
     // _visibility
     set visibility(v) {
         this._visibility = v;
     }
     get visibility() {
         return this._visibility || "";
-    }
-
-    // METHODS
-    valueIsValid(value) {
-        if (this._valid.indexOf("*") > -1) {
-            return true;
-        }
-        if (this._valid.indexOf(value) > -1) {
-            return true;
-        }
-        return false;
     }
     setVisibilityPublic() {
         this._visibility = "public";

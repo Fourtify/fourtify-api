@@ -1,12 +1,10 @@
-//var myApp = require('../app.js');
-//var request = require('supertest')(myApp);
-//var chai = require('chai');
+var chai = require('chai');
 
 var Name = require('../modules/generics/src/Name');
 var Phone = require('../modules/generics/src/Phone');
 var Setting = require('../modules/generics/src/Setting');
 
-describe('Generics', function(){
+describe('Generics Test', function(){
     var n = {
         first: "test",
         middle: "mi",
@@ -54,7 +52,7 @@ describe('Generics', function(){
         visibility : "private"
     };
     var setting = new Setting(s);
-    setting.value = "profile";
+
     it("should set Setting correctly", function(done){
         setting.module.should.be.equal("visitors");
         setting.name.should.be.equal("te");
@@ -65,15 +63,7 @@ describe('Generics', function(){
         done();
     });
     
-    it("valueIsValid() should validate value(if it's empty?)", function(done){
-        var t = setting.valueIsValid("pro");
-        t.should.be.equal(true);
-        t = setting.valueIsValid("");
-        t.should.be.equal(false);
-        done();
-    });
-    
-    it("setVisibilityPublic() setVisibilityPrivate() should work properly", function(done){
+    it("setVisibility Public/Private should work properly", function(done){
         setting.setVisibilityPublic();
         setting.visibility.should.be.equal("public");
         setting.setVisibilityPrivate();
@@ -82,13 +72,3 @@ describe('Generics', function(){
         done();
     });
 });
-
-
-/*
-app.get('/generic', function(req, res){
-    res.send(200, { name: 'generic' });
-});*/
-
-// In order to reach the app from other modules
-// we need to export the express application
-//module.exports.getApp = app;

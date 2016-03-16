@@ -68,7 +68,7 @@ var providerStatusUpdate = {
 /**
  * Description header - Actual tests below
  */
-describe("ProviderTests", function(){
+describe("Providers Tests", function(){
 
     /**
      * POST create new provider

@@ -1,7 +1,6 @@
 // only test one case
 
 var chai = require('chai');
-
 var error = require('../modules/errors/src/Error');
 
 describe('Error module', function(){
