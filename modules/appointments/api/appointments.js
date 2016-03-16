@@ -34,7 +34,8 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         AppointmentFactory.findAppointmentById({
             id: req.query.id,
-            provider: req.provider.id
+            provider: req.provider.id,
+            populate: req.query.populate
         }, function(err, data) {
             if (err) {
                 res.status(500).send(err);

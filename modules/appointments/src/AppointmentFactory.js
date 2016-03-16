@@ -155,10 +155,16 @@ module.exports = class AppointmentFactory {
             return callback(new Error("PROVIDER004"));
         }
 
-        AppointmentSchema.findOne({
+        var schemaQuery = AppointmentSchema.findOne({
             _id: params.id,
             provider: params.provider
-        }).exec(function(err, appointment) {
+        });
+
+        if (params.populate) {
+            schemaQuery.populate(params.populate);
+        }
+
+        schemaQuery.exec(function(err, appointment) {
             if (err) {
                 callback(new Error("DBA002", err.message));
             } else if (!appointment) {
@@ -167,6 +173,8 @@ module.exports = class AppointmentFactory {
                 callback(null, new Appointment(appointment));
             }
         });
+
+
     };
 
     static findAppointment(params, callback) {
