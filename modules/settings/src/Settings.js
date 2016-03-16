@@ -77,22 +77,18 @@ module.exports = class Settings {
     get logo() {
         return this._logo || "";
     }
-
     set slack(n) {
         this._slack = n;
     }
     get slack() {
         return this._slack || "";
     }
-
-
     set theme(n) {
         this._theme = n;
     }
     get theme() {
         return this._theme || {};
     }
-
     set isPopulated(b) {
         this._isPopulated = b;
     }
