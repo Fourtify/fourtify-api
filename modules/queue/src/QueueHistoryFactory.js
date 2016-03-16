@@ -4,6 +4,7 @@ var async = require("async");
 
 var QueueHistory = require("./QueueHistory"),
     QueueHistorySchema = require("../schemas/queueHistory"),
+    QueueSchema = require("../schemas/queue"),
     ProviderSchema = require("../../providers/schemas/providers"),
     VisitorSchema = require("../../visitors/schemas/visitors"),
     AppointmentSchema = require("../../appointments/schemas/appointments"),
@@ -44,7 +45,6 @@ module.exports = class QueueHistoryFactory {
         async.series([
                 function(cb) {
                     if (newObj.visitor) {
-                        //check if e mail already exists
                         VisitorSchema.findById(newObj.visitor).exec(function(err, foundVisitor) {
                             if (err) {
                                 return cb(new Error("DBA002", err.message));
@@ -55,14 +55,17 @@ module.exports = class QueueHistoryFactory {
                                         last: foundVisitor.name.last
                                     },
                                     email: foundVisitor.email,
-                                    phone: {
+                                    /*phone: {
                                         type: {
                                             type: foundVisitor.phone.type
                                         },
                                         number: foundVisitor.phone.number
-                                    },
+                                    },*/
                                     status: foundVisitor.status
                                 };
+                                if(foundVisitor.phone){
+                                    newQueueHistory.visitor.phone = foundVisitor.phone;
+                                }
                                 return cb(null);
                             }
                         });
@@ -72,7 +75,6 @@ module.exports = class QueueHistoryFactory {
                 },
                 function(cb) {
                     if (newObj.appointment) {
-                        //check if e mail already exists
                         AppointmentSchema.findById(newObj.appointment).exec(function(err, foundAppointment) {
                             if (err) {
                                 return cb(new Error("DBA002", err.message));
@@ -82,6 +84,7 @@ module.exports = class QueueHistoryFactory {
                                     start: foundAppointment.start,
                                     end: foundAppointment.end
                                 };
+                                foundAppointment.remove();
                                 return cb(null);
                             }
                         });
@@ -90,8 +93,23 @@ module.exports = class QueueHistoryFactory {
                     }
                 },
                 function(cb) {
+                    if(newObj.queue){
+                        QueueSchema.findById(newObj.queue).exec(function(err, foundQueue) {
+                            if (err) {
+                                return cb(new Error("DBA002", err.message));
+                            } else {
+                                newQueueHistory.postion = foundQueue.position;
+                                foundQueue.remove();
+                                return cb(null);
+                            }
+                        });
+                    }
+                    else {
+                        cb(null);
+                    }
+                },
+                function(cb) {
                     if (newObj.provider) {
-                        //check if e mail already exists
                         ProviderSchema.findById(newObj.provider).exec(function(err, foundProvider) {
                             if (err) {
                                 return cb(new Error("DBA002", err.message));
@@ -286,7 +304,10 @@ module.exports = class QueueHistoryFactory {
         } else {
             select = {
                 name: 1,
-                status: 1
+                status: 1,
+                visitor: 1,
+                appointment: 1,
+                position: 1
             };
         }
 

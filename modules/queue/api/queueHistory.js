@@ -78,7 +78,7 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
         provider: req.provider.id,
         visitor: req.body.visitor,
         appointment: req.body.appointment,
-        position: req.body.position
+        queue: req.body.queue
     }, function(err, data) {
         if (err) {
             res.status(500).send(err);

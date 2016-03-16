@@ -61,13 +61,7 @@ module.exports = class QueueFactory {
             return callback(new Error("Q001"));
         }
 
-        if (updateObj.appointment) {
-            queue.appointment = updateObj.appointment;
-        }
-        if (updateObj.position) {
-            queue.position = updateObj.position;
-        }
-
+        console.log(updateObj);
         QueueSchema.findOne({
             provider: updateObj.provider,
             _id: updateObj.queueId
@@ -76,6 +70,12 @@ module.exports = class QueueFactory {
                 callback(new Error("DBA003", err.message));
             }
             else {
+                if (updateObj.appointment) {
+                    queue.appointment = updateObj.appointment;
+                }
+                if (updateObj.position) {
+                    queue.position = updateObj.position;
+                }
                 queue.save(function(err, cbQueue) {
                     if (err) {
                         callback(new Error("DBA003", err.message));
@@ -150,8 +150,9 @@ module.exports = class QueueFactory {
             }
         } else {
             select = {
-                name: 1,
-                status: 1
+                visitor: 1,
+                appointment: 1,
+                position: 1
             };
         }
 
@@ -163,7 +164,7 @@ module.exports = class QueueFactory {
         paginate.paginate = params.paginate != "false";
         paginate.perPage = params.perPage ? params.perPage : 20;
         paginate.page = params.page ? params.page : 1;
-        sort[params.sortBy ? params.sortBy : "name"] = params.sort == -1 ? -1 : 1;
+        sort[params.sortBy ? params.sortBy : "position"] = params.sort == -1 ? -1 : 1;
 
         //@todo come back and do necessary calls for finding elements in a queue
         if (params.search) {
@@ -173,23 +174,12 @@ module.exports = class QueueFactory {
                 }
             };
         }
-        if (params.name) {
-            query = {
-                "name.first": {
-                    $regex: new RegExp(params.name.first, "i")
-                }
-            };
+
+        if (params.order) {
+            query.order = params.order;
         }
-        if (params.email) {
-            query = {
-                "email": {
-                    $regex: new RegExp(params.email, "i")
-                }
-            };
-        }
-        if (params.status) {
-            query.status = params.status;
-        }
+
+
 
         var schemaQuery = QueueSchema.find(query).select(select);
 
@@ -197,6 +187,9 @@ module.exports = class QueueFactory {
             schemaQuery.limit(paginate.perPage).skip(paginate.perPage * (paginate.page - 1));
         }
 
+        //if (params.populate) {
+            schemaQuery.populate("appointment visitor");
+        //}
         schemaQuery.sort(sort).exec(function(err, queue) {
             if (err) {
                 callback(new Error("DBA002", err.message));

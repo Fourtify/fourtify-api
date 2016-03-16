@@ -29,6 +29,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
     if (req.query.id) {
         QueueFactory.findQueueById({
             id: req.query.id,
+            populate: req.query.populate,
             provider: req.provider.id
         }, function(err, data) {
             if (err) {
@@ -47,6 +48,7 @@ router.get('/', AuthMiddleware.authenticate(), function(req, res) {
             page: req.query.page,
             sort: req.query.sort,
             sortBy: req.query.sortBy,
+            populate: req.query.populate,
             search: req.query.search,
             visitor: req.query.visitor,
             appointment: req.query.appointment
