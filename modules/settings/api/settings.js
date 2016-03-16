@@ -95,15 +95,17 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
 // =========================================================================
 // PUT - /settings/
 // =========================================================================
-// Update settings elements: basically anything except password
+// Update settings elements
 router.put('/', AuthMiddleware.authenticate(), function(req, res) {
 
     if (!req.provider) {
         return res.status(500).send(new Error("PROVIDER004"));
     }
 
+
     SettingsFactory.updateSettings({
         provider: req.provider.id,
+        id: req.body.id,
         timezone: req.body.timezone,
         logo: req.body.logo,
         slack: req.body.slack,

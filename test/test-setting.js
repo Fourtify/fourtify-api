@@ -2,9 +2,6 @@ var request = require("supertest");
 var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
-var newSetting;
-var updateSetting;
-
 
 var auth = {
     'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
@@ -17,7 +14,29 @@ var clientInfo = {
     password: '12345'
 };
 
-var provider;
+//Temp settings
+var createTheseSettings = {
+    "name": "TempName",
+    "timezone": "Middle Earth",
+    "logo": "http://www.logologo.com/logos/generic-globe-vector-logo.jpg",
+    "slack": "tight-pants",
+    "theme": {
+        "primaryColor": "03A9F4",
+        "secondaryColor": "B3E5FC"
+    }
+};
+
+var d = new Date();
+var salt = d.getTime();
+
+//Edit provider settings
+var updateTheseSettings = {
+    "name": "Tesla"+salt,
+    "timezone": "Brotown/New Jersey/"+salt,
+    "logo": "http://www.logologo.com/logos/generic-globe-vector-logo-"+salt+".jpg",
+    "slack": "slack-face-"+salt
+};
+
 var accessToken;
 
 describe("Settings Tests", function () {
@@ -63,9 +82,9 @@ describe("Settings Tests", function () {
     });
 
 // =========================================================================
-// GET - /settings
+// GET - /settings  (get settings)
 // =========================================================================
-    it("Should get all return values", function (done) {
+    it("Should get all settings return values", function (done) {
         request(url)
             .get('/settings')
             .set('Authorization', 'Bearer '+ accessToken)
@@ -74,83 +93,89 @@ describe("Settings Tests", function () {
                 res.should.be.json;
                 res.body.should.have.property('_id');
                 res.body.should.have.property('_timezone');
-                res.body.should.have.property('_logo');
-                res.body.should.have.property('_slack');
 
-                res.body.should.have.property('_theme');
-                res.body._theme.should.have.property('primaryColor');
-                res.body._theme.should.have.property('secondaryColor');
+                //Optional
+                //res.body.should.have.property('_logo');
+                //res.body.should.have.property('_slack');
+                //res.body.should.have.property('_theme');
+                //res.body._theme.should.have.property('primaryColor');
+                //res.body._theme.should.have.property('secondaryColor');
                 done();
             });
     });
 
 
-
-
-/*
 // =========================================================================
-// GET - /settings
+// PUT - /settings/:settingsId (update settings)
 // =========================================================================
-    it("Should Get settings based on query parameters..", function (done) {
+    it("Should Update settings elements: provider, timezone, logo, slack, theme", function (done) {
         request(url)
-            .get('/settings')
+            .put('/settings/')
+            .send(updateTheseSettings)
+            .set('Authorization', 'Bearer '+ accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 res.should.be.json;
                 //res.body.should.have.property('provider');
-                //res.body.should.have.property('sortBy');
-                //res.body.should.have.property('search');
-                console.log("provider: "+provider );
+                //res.body.should.have.property('timezone');
+                //res.body.should.have.property('logo');
                 done();
             });
     });
 
 // =========================================================================
-// POST - /settings
+// POST - /settings (create temp settings)
 // =========================================================================
-    var settingid;
+    var tempSettingsId;
 
-    it("Should Create a settings", function (done) {
+    it("Should Create a temp settings", function (done) {
         request(url)
             .post('/settings')
-            .send(newSetting)
+            .set('Authorization', 'Bearer '+ accessToken)
+            .send(createTheseSettings)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 res.should.be.json;
-                //res.body.should.have.property('provider');
-                //res.body.should.have.property('timezone');
-                //res.body.should.have.property('logo');
-                res.body.should.have.property('settingsId');
-                settingid = res.body.settingsId;
+                res.body.should.have.property('_id');
+                tempSettingsId = res.body._id;
+
                 done();
             });
     });
 
 
 // =========================================================================
-// PUT - /settings/:settingsId
+// GET - /settings (get temp settings)
 // =========================================================================
-    it("Should Update settings elements: basically anything except password.", function (done) {
+    it("Should Get settings based on query parameters: id", function (done) {
         request(url)
-            .put('/settings/' + settingid)
-            .send(updateSetting)
+            .get('/settings?id=' + tempSettingsId)
+            .set('Authorization', 'Bearer '+ accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 res.should.be.json;
-                //res.body.should.have.property('provider');
-                //res.body.should.have.property('timezone');
-                //res.body.should.have.property('logo');
+                res.body.should.have.property('_id');
+                res.body.should.have.property('_timezone');
+                //Optional
+                //res.body.should.have.property('_logo');
+                //res.body.should.have.property('_slack');
+                //res.body.should.have.property('_theme');
+                //res.body._theme.should.have.property('primaryColor');
+                //res.body._theme.should.have.property('secondaryColor');
+
                 done();
             });
     });
 
 
+
 // =========================================================================
-// DELETE - /settings/:settingsId
+// DELETE - /settings/:settingsId (delete temp settings)
 // =========================================================================
     it("Should Delete a setting with id.", function (done) {
         request(url)
-            .delete('/settings/' + settingid)
+            .delete('/settings/' + tempSettingsId)
+            .set('Authorization', 'Bearer '+ accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 //res.should.be.json;
@@ -160,5 +185,8 @@ describe("Settings Tests", function () {
     });
 
 
-*/
+
+
+
+
 });
