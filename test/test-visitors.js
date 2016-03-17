@@ -84,7 +84,6 @@ describe("Visitor Tests", function () {
 
     var visitorId;
 
-
     it('POST Should Create a visitor', function (done) {
         request(url)
             .post('/visitors')
