@@ -12,28 +12,7 @@ var updatedName = 'DonDonJonJon';
 var updatedStatus = 'Fired!';
 
 
-/** Real stupid dummy info to use for testing */
-var providerCreate = {
 
-    provider: {
-        name: 'Donald J Trump',
-        domain: nameToUse
-    },
-    employee: {
-        name: {
-            first: 'Donald',
-            last: 'Trump Jr.'
-        },
-        email: 'donald@trump.com',
-        password: '123456',
-        title: 'Overlord',
-        phone: {
-            type: 'Palindrome',
-            number: '123454321'
-        }
-    }
-
-};
 
 /**
  * REQ: Provider = name (string), domain
@@ -70,6 +49,31 @@ describe("Providers Tests", function () {
 // =========================================================================
 // POST create new provider
 // =========================================================================
+
+    /** Real stupid dummy info to use for testing */
+    var providerCreate = {
+
+        provider: {
+            name: 'Donald J Trump',
+            domain: nameToUse
+        },
+        employee: {
+            name: {
+                first: 'Donald',
+                last: 'Trump Jr.'
+            },
+            email: 'donald@trump.com',
+            password: '123456',
+            title: 'Overlord',
+            phone: {
+                type: 'Palindrome',
+                number: '123454321'
+            }
+        }
+
+    };
+
+
     it("POST Should create provider with initial employee", function (done) {
         request(url)
             .post('/providers')

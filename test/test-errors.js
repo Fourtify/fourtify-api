@@ -3,7 +3,12 @@
 var chai = require('chai');
 var error = require('../modules/errors/src/Error');
 
+
 describe('Error module', function(){
+
+// =========================================================================
+// Local error object tests
+// =========================================================================
     var err = new error("DBA001", "visitor");
     it("should contain the same error code assigned", function(done){
         err.code.should.be.equal("DBA001");

@@ -16,8 +16,11 @@ var clientInfo = {
 var accessId, autho, temProviderId;
 
 describe("Employees", function(){
-     
-     it("should receive an authorization accessToken", function(done){
+
+// =========================================================================
+// need authentication for tests
+// =========================================================================
+     it("POST should receive an authorization accessToken", function(done){
         request(url)
         .post('/authentication/token')
         .set(auth)
@@ -39,14 +42,18 @@ describe("Employees", function(){
             done();
         });
      });
-    
-    it("should have a id", function(done) {
+
+
+    it("should have an id", function(done) {
         accessId.should.not.be.empty();
         autho = "Bearer " + accessId;
         done();
     });
 
-     // GET - /employees/count
+
+// =========================================================================
+// GET - /employees/count
+// =========================================================================
     it("GET should get number of employees for this provider", function(done){
         request(url)
         .get('/employees/count')
@@ -62,9 +69,13 @@ describe("Employees", function(){
             done();
         });
     });
-    
+
+
+// =========================================================================
+// POST - /employees  Create an employee
+// =========================================================================
     var tempEmId;
-    // POST - /employees  Create an employee
+
     it("POST should create an employee", function(done){
         var form = {
             name: {
@@ -95,8 +106,11 @@ describe("Employees", function(){
             done();
         });
     });
-    
-     // GET - /employees
+
+
+// =========================================================================
+// GET - /employees
+// =========================================================================
     it("GET should retrive an employee based on query", function(done){
         request(url)
         .get('/employees')
@@ -116,7 +130,10 @@ describe("Employees", function(){
         });
     });
     
-    // PUT - /employees/:employeeId/profile
+
+// =========================================================================
+// PUT - /employees/:employeeId/profile
+// =========================================================================
     it("PUT should update employee profile", function(done){
         var form = {
             name: {
@@ -143,7 +160,10 @@ describe("Employees", function(){
     });
     
     
-    // PUT - /employees/:employeeId/password
+
+// =========================================================================
+// PUT - /employees/:employeeId/password
+// =========================================================================
     it("PUT should update employee password", function(done){
         var pw = {
             password: "new12345678" };
@@ -165,7 +185,10 @@ describe("Employees", function(){
     });
     
     
-    // DELETE - /employees/:employeeId
+
+// =========================================================================
+// DELETE - /employees/:employeeId
+// =========================================================================
     it("DELETE should delete employee", function(done){
         
         request(url)

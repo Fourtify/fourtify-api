@@ -11,7 +11,7 @@ var tempVisitorId = "56ea079efff772cc283d2de5";
 var tempApptId;
 var tempQueueId;
 
-describe("Queue Tests", function () {
+describe("Queue History Tests", function () {
 
 
 // =========================================================================
@@ -52,11 +52,11 @@ describe("Queue Tests", function () {
     });
 
 // =========================================================================
-// GET - /queue/count
+// GET - /queue/history/count
 // =========================================================================
-    it("GET Should Get the number of queue for this provider.", function (done) {
+    it("GET Should Get the number of queue history for this provider.", function (done) {
         request(url)
-            .get('/queue/count')
+            .get('/queue/history/count')
             .set('Authorization', 'Bearer ' + accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
@@ -68,11 +68,11 @@ describe("Queue Tests", function () {
 
 
 // =========================================================================
-// GET - /queue
+// GET - /queue/history
 // =========================================================================
     it("GET Should Get queue based on query parameters.", function (done) {
         request(url)
-            .get('/queue')
+            .get('/queue/history')
             .set('Authorization', 'Bearer ' + accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
@@ -157,21 +157,21 @@ describe("Queue Tests", function () {
 
 
 // =========================================================================
-// POST - /queue
+// POST - /queue/history
 // =========================================================================
 
-    var newQueue = {
+    var newHistoryQueue = {
         "visitor": tempVisitorId,
         "appointment": tempApptId
     };
 
 
 
-    it("POST Should Create a queue.", function (done) {
+    it("POST Should Create a history queue.", function (done) {
         request(url)
-            .post('/queue')
+            .post('/queue/history')
             .set('Authorization', 'Bearer ' + accessToken)
-            .send(newQueue)
+            .send(newHistoryQueue)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 res.should.be.json;
@@ -183,7 +183,7 @@ describe("Queue Tests", function () {
 
 
 // =========================================================================
-// PUT - /queue/:queueId
+// PUT - /queue/history/:queueId
 // =========================================================================
 
     var updateQueue = {
@@ -194,7 +194,7 @@ describe("Queue Tests", function () {
 
     it("PUT Should Update queue elements.", function (done) {
         request(url)
-            .put('/queue/' + tempQueueId)
+            .put('/queue/history/' + tempQueueId)
             .set('Authorization', 'Bearer ' + accessToken)
             .send(updateQueue)
             .end(function (err, res) {
@@ -208,11 +208,11 @@ describe("Queue Tests", function () {
 
 
 // =========================================================================
-// DELETE - /queue/:queueId
+// DELETE - /queue/history/:queueId
 // =========================================================================
     it("DELETE Should Delete a queue.", function (done) {
         request(url)
-            .delete('/queue/' + tempQueueId)
+            .delete('/queue/history/' + tempQueueId)
             .set('Authorization', 'Bearer ' + accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
