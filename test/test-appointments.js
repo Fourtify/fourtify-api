@@ -114,8 +114,8 @@ describe("Appointments Tests", function () {
 
     var newAppt = {
         visitor: tempVisitorId,
-        start: start,           //"2016-03-13T19:17:45-07:00",
-        end: end                //"2016-03-13T19:17:45-07:00"
+        start: start,
+        end: end
     };
 
     var tempApptId;
@@ -137,7 +137,7 @@ describe("Appointments Tests", function () {
                 res.body.should.have.property('_start');
                 res.body.should.have.property('_end');
                 res.body.should.have.property('_status');
-                res.body.should.have.property('_reason');
+                //res.body.should.have.property('_reason');
                 done();
             });
     });
@@ -155,12 +155,14 @@ describe("Appointments Tests", function () {
 
                 res.should.have.property('status', 200);
                 res.should.be.json;
-
+                res.body[0].should.have.property('_visitor');
+                res.body[0].should.have.property('_start');
+                res.body[0].should.have.property('_end');
+                res.body[0].should.have.property('_status');
+                //res.body.should.have.property('_reason');
                 done();
             });
     });
-
-
 
 
 
@@ -189,7 +191,7 @@ describe("Appointments Tests", function () {
                 res.body.should.have.property('_start');
                 res.body.should.have.property('_end');
                 res.body.should.have.property('_status');
-                res.body.should.have.property('_reason');
+                //res.body.should.have.property('_reason');
 
                 done();
             });
@@ -199,9 +201,10 @@ describe("Appointments Tests", function () {
 // =========================================================================
 // DELETE - /appointment/:appointmentId
 // =========================================================================
-    it("Should delete a appointment.", function (done) {
+    it("Should delete an appointment.", function (done) {
         request(url)
-            .delete('/appointments/' + apptID)
+            .delete('/appointments/' + tempApptId)
+            .set('Authorization', 'Bearer ' + accessToken)
             .end(function (err, res) {
                 if (err)
                     throw(err);
