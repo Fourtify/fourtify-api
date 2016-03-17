@@ -106,10 +106,12 @@ router.put('/:queueId', AuthMiddleware.authenticate(), function(req, res) {
         provider: req.provider.id,
         queueId: req.params.queueId,
         visitor: req.body.visitor,
-        appointment: req.body.appointment,
+        appointment: req.body.appointment,          //TODO: update issue in factory
         position: req.body.position
+
     }, function(err, data) {
         if (err) {
+            console.log("error: "+error)
             res.status(500).send(err);
         } else {
             res.status(200).send(data);

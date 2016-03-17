@@ -1,12 +1,15 @@
 var request = require("supertest");
 var chai = require('chai');
 var url = "http://127.0.0.1:3001";
+var moment = require("moment");
 
 var d = new Date().getTime();
 var start = moment(d);
 var end = moment(d).add(1, 'hours');
-var visitorId;
+
+var tempVisitorId = "56ea079efff772cc283d2de5";
 var tempApptId;
+var tempQueueId;
 
 describe("queue", function () {
 
@@ -84,6 +87,7 @@ describe("queue", function () {
 // POST - /visitor
 // =========================================================================
 
+
     var tempVisitor = {
         "name": {
             "first": "Donald",
@@ -107,7 +111,7 @@ describe("queue", function () {
                 res.should.have.property('status', 200);
                 res.should.be.json;
                 res.body.should.have.property('_id');
-                visitorId = res.body._id;
+                tempVisitorId = res.body._id;
                 res.body.should.have.property('_name');
                 res.body.should.have.property('_email');
                 res.body.should.have.property('_phone');
@@ -122,7 +126,7 @@ describe("queue", function () {
 // =========================================================================
 
     var newAppt = {
-        visitor: visitorId,
+        visitor: tempVisitorId,
         start: start,
         end: end
     };
@@ -157,11 +161,11 @@ describe("queue", function () {
 // =========================================================================
 
     var newQueue = {
-        "visitor": visitorId,
+        "visitor": tempVisitorId,
         "appointment": tempApptId
     };
 
-    var queueid;
+
 
     it("Should Create a queue.", function (done) {
         request(url)
@@ -171,8 +175,8 @@ describe("queue", function () {
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 res.should.be.json;
-                res.body.should.have.property('queueId');
-                queueid = res.body.queueId;
+                res.body.should.have.property('_id');
+                tempQueueId = res.body._id;
                 done();
             });
     });
@@ -183,7 +187,7 @@ describe("queue", function () {
 // =========================================================================
     it("Should Update queue elements.", function (done) {
         request(url)
-            .PUT('/queue/' + queueid)
+            .PUT('/queue/' + tempQueueId)
             .set('Authorization', 'Bearer ' + accessToken)
             .send(updateQueue)
             .end(function (err, res) {

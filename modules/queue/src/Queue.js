@@ -1,8 +1,8 @@
 "use strict";
 
-var Provider = require("../../providers/src/Provider");
-var Visitor = require("../../visitors/src/Visitor");
-var Appointment = require("../../appointments/src/Appointment");
+var Provider =      require("../../providers/src/Provider");
+var Visitor =       require("../../visitors/src/Visitor");
+var Appointment =   require("../../appointments/src/Appointment");
 
 module.exports = class Queue {
 
