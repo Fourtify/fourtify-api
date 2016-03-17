@@ -1,3 +1,5 @@
 machine:
   node:
     version: 4.2.2
+  host:
+    dev.circleci.com: 127.0.0.1
