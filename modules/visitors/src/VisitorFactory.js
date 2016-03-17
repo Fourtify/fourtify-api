@@ -245,7 +245,8 @@ module.exports = class VisitorFactory {
             select = {
                 name: 1,
                 status: 1,
-                email:1
+                email:1,
+                visitor:1
             };
         }
 
