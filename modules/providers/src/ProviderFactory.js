@@ -166,7 +166,9 @@ module.exports = class ProviderFactory {
         } else {
             select = {
                 name: 1,
-                status: 1
+                status: 1,
+                domain: 1,
+                timeStamp: 1
             };
         }
 
