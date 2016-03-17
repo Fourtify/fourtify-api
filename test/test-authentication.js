@@ -132,7 +132,7 @@ describe("Authentication", function () {
 // =========================================================================
 // POST with wrong user data (email)
 // =========================================================================
-    it("Should not found provider/employee and return err code if POST with wrong employee data", function (done) {
+    it("POST Should not found provider/employee and return err code if POST with wrong employee data", function (done) {
         request(url)
             .post('/authentication/token')
             .set(auth)

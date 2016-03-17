@@ -185,7 +185,7 @@ module.exports = class EmployeeFactory {
         if (!updateObj.provider) {
             return callback(new Error("PROVIDER004"));
         }
-        if (updateObj.password) {
+        if (!updateObj.password) {
             return callback(new Error("EMPLOYEE003"));
         }
         EmployeeSchema.findOne({
