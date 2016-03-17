@@ -3,16 +3,7 @@ var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
 
-var auth = {
-    'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
-    'Content-Type': 'application/x-www-form-urlencoded'
-};
 
-var clientInfo = {
-    grant_type: 'password',
-    email: 'biz@biz.com',
-    password: '12345'
-};
 
 //Temp settings
 var createTheseSettings = {
@@ -37,13 +28,26 @@ var updateTheseSettings = {
     "slack": "slack-face-"+salt
 };
 
-var accessToken;
+
 
 describe("Settings Tests", function () {
 
 // =========================================================================
 // need authentication for tests
 // =========================================================================
+
+    var auth = {
+        'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    var clientInfo = {
+        grant_type: 'password',
+        email: 'biz@biz.com',
+        password: '12345'
+    };
+    var accessToken;
+
     it("POST Retrieve an auth token from server", function (done) {
         request(url)
             .post('/authentication/token')

@@ -4,7 +4,10 @@ var url = "http://127.0.0.1:3001";
 
 // var Auth = require("../modules/authentication/src/AuthenticationFactory"); // generate access token using a test provider id
 
-var auth = { 'Authorization': 'Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=', 'Content-Type': 'application/x-www-form-urlencoded' };
+var auth = {
+    'Authorization': 'Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=',
+    'Content-Type': 'application/x-www-form-urlencoded'
+};
 
 var clientInfo = {
      grant_type: 'password',

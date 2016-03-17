@@ -1,103 +1,216 @@
 var request = require("supertest");
 var chai = require('chai');
+var moment = require("moment");
 var url = "http://127.0.0.1:3001";
 
-var newAppt ={
-	visitor : "56dcc8f380d0fac81daf7765",
-	start: "2016-03-13T19:17:45-07:00",
-	end: "2016-03-13T19:17:45-07:00"
-};
+var d = new Date().getTime();
+var start = moment(d);
+var end = moment(d).add(1, 'hours');
 
-var updateAppt = {
-    end: "2016-06-13T19:17:45-07:00"
-};
 
-var apptID;
+var tempVisitorId = "56ea079efff772cc283d2de5";
 
-describe("appointments", function(){
-    
-    //GET - /appointment/count
-    it("GET Should get the number of appointment for this provider", function(done){
+
+
+
+describe("Appointments Tests", function () {
+
+// =========================================================================
+// need authentication for tests
+// =========================================================================
+
+    var auth = {
+        'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    var clientInfo = {
+        grant_type: 'password',
+        email: 'biz@biz.com',
+        password: '12345'
+    };
+    var accessToken;
+
+    it("POST Retrieve an auth token from server", function (done) {
         request(url)
-        .get('/appointment/count')
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',200);
-            res.should.be.json;
-            res.body.should.have.property('count');
-            res.body.count.should.be.an.Number();
-            done();
-        });
-    });
-    
-    // GET - /appointment
-    it("GET Should get appointment based on query parameters.", function(done){
-        request(url)
-        .get('/appointment')
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',200);
-            res.should.be.json;
+            .post('/authentication/token')
+            .set(auth)
+            .send(clientInfo)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
 
-            done();
-        });
-    });
-    
-    // POST - /appointment
-    it("Create a appointment", function(done){
-        request(url)
-        .post('/appointment')
-        .send(newAppt)
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',200);
-            res.should.be.json;
-            res.body.should.have.property(appointmentId);
-            apptID = res.body.appointmentId;
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.not.be.empty();
+                res.body.should.have.property('accessToken');
+                res.body.should.have.property('provider');
+                res.body.accessToken.should.have.property('_value');
+                accessToken = res.body.accessToken._value;
 
-            done();
-        });
+                done();
+            });
     });
-    
-    
-    
-    // PUT - /appointment/:appointmentId
-    it("Should update appointment elements", function(done){
-        request(url)
-        .put('/appointment/' + apptID)
-        .send(updateAppt)
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',200);
-            res.should.be.json;
 
-            done();
-        });
-    });
-    
-    
-    
-    // DELETE - /appointment/:appointmentId
-    it("Should delete a appointment.", function(done){
+// =========================================================================
+// GET - /appointment/count
+// =========================================================================
+    it("GET Should get the number of appointment for this provider", function (done) {
         request(url)
-        .delete('/appointment/' + apptID)
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',200);
-            //res.should.be.json;
-            //res.should.be.empty(); 
-            done();
-        });
+            .get('/appointments/count')
+            .set('Authorization', 'Bearer ' + accessToken)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('count');
+                res.body.count.should.be.an.Number().greaterThanOrEqual(0);
+                done();
+            });
     });
-    
+
+// =========================================================================
+// POST - /visitors/
+// =========================================================================
+
+    var tempVisitor = {
+        "name": {
+            "first": "Donald",
+            "last": "Trumbo"
+        },
+        "email": 'your@fired.com'+d,
+        "phone": {
+            "type": "cellphone",
+            "number": "1234334"
+        }
+    };
+
+
+    it('Should Create a temp visitor for testing', function (done) {
+        request(url)
+            .post('/visitors')
+            .set('Authorization', 'Bearer ' + accessToken)
+            .send(tempVisitor)
+            .end(function (err, res) {
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('_provider');
+                res.body.should.have.property('_id');
+                tempVisitorId = res.body._id;
+                //res.body.should.have.property('_name');
+                //res.body.should.have.property('_email');
+                //res.body.should.have.property('_phone');
+                //res.body.should.have.property('_status');
+                done();
+            });
+    });
+
+
+// =========================================================================
+// POST - /appointment  (create temp appt)
+// =========================================================================
+
+    var newAppt = {
+        visitor: tempVisitorId,
+        start: start,           //"2016-03-13T19:17:45-07:00",
+        end: end                //"2016-03-13T19:17:45-07:00"
+    };
+
+    var tempApptId;
+
+    it("Create an appointment", function (done) {
+        request(url)
+            .post('/appointments')
+            .set('Authorization', 'Bearer ' + accessToken)
+            .send(newAppt)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('_id');
+                tempApptId = res.body._id;
+                res.body.should.have.property('_visitor');
+                res.body.should.have.property('_start');
+                res.body.should.have.property('_end');
+                res.body.should.have.property('_status');
+                res.body.should.have.property('_reason');
+                done();
+            });
+    });
+
+// =========================================================================
+// GET - /appointments
+// =========================================================================
+    it("GET Should get appointments base on query", function (done) {
+        request(url)
+            .get('/appointments')
+            .set('Authorization', 'Bearer ' + accessToken)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 200);
+                res.should.be.json;
+
+                done();
+            });
+    });
+
+
+
+
+
+// =========================================================================
+// PUT - /appointment/:appointmentId
+// =========================================================================
+    var updateAppt = {
+        visitor: tempVisitorId,
+        end: moment(d).add(3, 'hours'),
+        status: "Checked-In"
+    };
+
+    it("Should update appointment end and status", function (done) {
+        request(url)
+            .put('/appointments/' + tempApptId)
+            .set('Authorization', 'Bearer ' + accessToken)
+            .send(updateAppt)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('_id');
+                res.body.should.have.property('_visitor');
+                res.body.should.have.property('_start');
+                res.body.should.have.property('_end');
+                res.body.should.have.property('_status');
+                res.body.should.have.property('_reason');
+
+                done();
+            });
+    });
+
+
+// =========================================================================
+// DELETE - /appointment/:appointmentId
+// =========================================================================
+    it("Should delete a appointment.", function (done) {
+        request(url)
+            .delete('/appointments/' + apptID)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 200);
+                //res.should.be.json;
+                //res.should.be.empty();
+                done();
+            });
+    });
+
 });
