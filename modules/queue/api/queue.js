@@ -107,7 +107,7 @@ router.put('/:queueId', AuthMiddleware.authenticate(), function(req, res) {
         queueId: req.params.queueId,
         visitor: req.body.visitor,
         appointment: req.body.appointment,          //TODO: update issue in factory
-        position: req.body.position
+        position: req.body.position                 //TODO: update issue in factory
 
     }, function(err, data) {
         if (err) {

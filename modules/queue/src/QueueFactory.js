@@ -65,13 +65,13 @@ module.exports = class QueueFactory {
         console.log("updateObj.appointment: "+updateObj.appointment)
         console.log("updateObj.position: "+updateObj.position)
 
-        /*
+
         if (updateObj.appointment) {
             //queue.appointment = updateObj.appointment;        //TODO: this line is not correctly updating (crashes)
         }
         if (updateObj.position) {
             queue.position = updateObj.position;                //TODO: this line is not correctly updating (crashes)
-        }*/
+        }
 
 
         QueueSchema.findOne({

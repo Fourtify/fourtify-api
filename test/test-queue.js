@@ -54,7 +54,7 @@ describe("queue", function () {
 // =========================================================================
 // GET - /queue/count
 // =========================================================================
-    it("Should Get the number of queue for this provider.", function (done) {
+    it("GET Should Get the number of queue for this provider.", function (done) {
         request(url)
             .get('/queue/count')
             .set('Authorization', 'Bearer ' + accessToken)
@@ -70,7 +70,7 @@ describe("queue", function () {
 // =========================================================================
 // GET - /queue
 // =========================================================================
-    it("Should Get queue based on query parameters.", function (done) {
+    it("GET Should Get queue based on query parameters.", function (done) {
         request(url)
             .get('/queue')
             .set('Authorization', 'Bearer ' + accessToken)
@@ -167,7 +167,7 @@ describe("queue", function () {
 
 
 
-    it("Should Create a queue.", function (done) {
+    it("POST Should Create a queue.", function (done) {
         request(url)
             .post('/queue')
             .set('Authorization', 'Bearer ' + accessToken)
@@ -185,7 +185,14 @@ describe("queue", function () {
 // =========================================================================
 // PUT - /queue/:queueId
 // =========================================================================
-    it("Should Update queue elements.", function (done) {
+
+    var updateQueue = {
+        "visitor": tempVisitorId,
+        "appointment": tempApptId,
+        "position": "56754"             //update position
+    };
+
+    it("PUT Should Update queue elements.", function (done) {
         request(url)
             .PUT('/queue/' + tempQueueId)
             .set('Authorization', 'Bearer ' + accessToken)
@@ -203,9 +210,9 @@ describe("queue", function () {
 // =========================================================================
 // DELETE - /queue/:queueId
 // =========================================================================
-    it("Should Delete a queue.", function (done) {
+    it("DELETE Should Delete a queue.", function (done) {
         request(url)
-            .delete('/queue/' + queueid)
+            .delete('/queue/' + tempQueueId)
             .set('Authorization', 'Bearer ' + accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
