@@ -34,7 +34,10 @@ var accountNotExist = {
 };
 
 describe("Authentication", function () {
-    // POST /authentication/token
+
+// =========================================================================
+// POST /authentication/token
+// =========================================================================
     it("POST Should retrieve a token from server if email exists, using password as grant type", function (done) {
         request(url)
             .post('/authentication/token')
@@ -59,7 +62,10 @@ describe("Authentication", function () {
             });
     });
 
-    // POST returns err if not x-www-form-urlencoded
+
+// =========================================================================
+// POST returns err if not x-www-form-urlencoded
+// =========================================================================
     it("POST Should get err if not x-www-form-urlencoded", function (done) {
         request(url)
             .post('/authentication/token')
@@ -78,7 +84,10 @@ describe("Authentication", function () {
             });
     });
 
-    // POST returns err if incorrect grant type
+
+// =========================================================================
+// POST returns err if incorrect grant type
+// =========================================================================
     it("POST Should get err if incorrect grant type", function (done) {
         request(url)
             .post('/authentication/token')
@@ -97,7 +106,10 @@ describe("Authentication", function () {
             });
     });
 
-    // POST returns err if authentication is incorrect
+
+// =========================================================================
+// POST returns err if authentication is incorrect
+// =========================================================================
     it("POST Should get err if grant type is incorrect", function (done) {
         request(url)
             .post('/authentication/token')
@@ -116,7 +128,10 @@ describe("Authentication", function () {
             });
     });
 
-    // POST with wrong user data (email)
+
+// =========================================================================
+// POST with wrong user data (email)
+// =========================================================================
     it("Should not found provider/employee and return err code if POST with wrong employee data", function (done) {
         request(url)
             .post('/authentication/token')
