@@ -2,7 +2,6 @@ var request = require('supertest');
 var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
-// var Auth = require("../modules/authentication/src/AuthenticationFactory"); // generate access token using a test provider id
 var auth = {
     'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
     'Content-Type': 'application/x-www-form-urlencoded'

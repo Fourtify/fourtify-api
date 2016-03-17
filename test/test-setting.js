@@ -3,47 +3,29 @@ var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
 
-var auth = {
-    'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
-    'Content-Type': 'application/x-www-form-urlencoded'
-};
 
-var clientInfo = {
-    grant_type: 'password',
-    email: 'biz@biz.com',
-    password: '12345'
-};
+var salt = new Date().getTime();
 
-//Temp settings
-var createTheseSettings = {
-    "name": "TempName",
-    "timezone": "Middle Earth",
-    "logo": "http://www.logologo.com/logos/generic-globe-vector-logo.jpg",
-    "slack": "tight-pants",
-    "theme": {
-        "primaryColor": "03A9F4",
-        "secondaryColor": "B3E5FC"
-    }
-};
 
-var d = new Date();
-var salt = d.getTime();
-
-//Edit provider settings
-var updateTheseSettings = {
-    "name": "Tesla"+salt,
-    "timezone": "Brotown/New Jersey/"+salt,
-    "logo": "http://www.logologo.com/logos/generic-globe-vector-logo-"+salt+".jpg",
-    "slack": "slack-face-"+salt
-};
-
-var accessToken;
 
 describe("Settings Tests", function () {
 
 // =========================================================================
 // need authentication for tests
 // =========================================================================
+
+    var auth = {
+        'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    var clientInfo = {
+        grant_type: 'password',
+        email: 'biz@biz.com',
+        password: '12345'
+    };
+    var accessToken;
+
     it("POST Retrieve an auth token from server", function (done) {
         request(url)
             .post('/authentication/token')
@@ -68,7 +50,7 @@ describe("Settings Tests", function () {
 // =========================================================================
 //  GET - /settings/count
 // =========================================================================
-    it("Should Get the number of settings for this provider.", function (done) {
+    it("GET Should Get the number of settings for this provider.", function (done) {
         request(url)
             .get('/settings/count')
             .set('Authorization', 'Bearer '+ accessToken)
@@ -84,7 +66,7 @@ describe("Settings Tests", function () {
 // =========================================================================
 // GET - /settings  (get settings)
 // =========================================================================
-    it("Should get all settings return values", function (done) {
+    it("GET Should get all settings return values", function (done) {
         request(url)
             .get('/settings')
             .set('Authorization', 'Bearer '+ accessToken)
@@ -108,7 +90,17 @@ describe("Settings Tests", function () {
 // =========================================================================
 // PUT - /settings/:settingsId (update settings)
 // =========================================================================
-    it("Should Update settings elements: provider, timezone, logo, slack, theme", function (done) {
+
+    //Edit provider settings
+    var updateTheseSettings = {
+        "name": "Tesla"+salt,
+        "timezone": "Brotown/New Jersey/"+salt,
+        "logo": "http://www.logologo.com/logos/generic-globe-vector-logo-"+salt+".jpg",
+        "slack": "slack-face-"+salt
+    };
+
+
+    it("PUT Should Update settings elements: provider, timezone, logo, slack, theme", function (done) {
         request(url)
             .put('/settings/')
             .send(updateTheseSettings)
@@ -128,7 +120,18 @@ describe("Settings Tests", function () {
 // =========================================================================
     var tempSettingsId;
 
-    it("Should Create a temp settings", function (done) {
+    var createTheseSettings = {
+        "name": "TempName",
+        "timezone": "Middle Earth",
+        "logo": "http://www.logologo.com/logos/generic-globe-vector-logo.jpg",
+        "slack": "tight-pants",
+        "theme": {
+            "primaryColor": "03A9F4",
+            "secondaryColor": "B3E5FC"
+        }
+    };
+
+    it("POST Should Create a temp settings", function (done) {
         request(url)
             .post('/settings')
             .set('Authorization', 'Bearer '+ accessToken)
@@ -147,7 +150,7 @@ describe("Settings Tests", function () {
 // =========================================================================
 // GET - /settings (get temp settings)
 // =========================================================================
-    it("Should Get settings based on query parameters: id", function (done) {
+    it("GET Should Get settings based on query parameters: id", function (done) {
         request(url)
             .get('/settings?id=' + tempSettingsId)
             .set('Authorization', 'Bearer '+ accessToken)
@@ -172,7 +175,7 @@ describe("Settings Tests", function () {
 // =========================================================================
 // DELETE - /settings/:settingsId (delete temp settings)
 // =========================================================================
-    it("Should Delete a setting with id.", function (done) {
+    it("DELETE Should Delete a setting with id.", function (done) {
         request(url)
             .delete('/settings/' + tempSettingsId)
             .set('Authorization', 'Bearer '+ accessToken)

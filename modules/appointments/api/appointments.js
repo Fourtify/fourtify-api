@@ -111,7 +111,7 @@ router.put('/:appointmentId', AuthMiddleware.authenticate(), function(req, res) 
         return res.status(500).send(new Error("APPOINTMENT001"));
     }
 
-    AppointmentFactory.updateAppointmentProfile({
+    AppointmentFactory.updateAppointment({
         provider: req.provider.id,
         appointmentId: req.params.appointmentId,
         visitor: req.body.visitor,

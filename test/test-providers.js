@@ -135,7 +135,7 @@ describe("Providers Tests", function () {
 // =========================================================================
 // PUT update provider name
 // =========================================================================
-    it("Should update provider name", function (done) {
+    it("PUT Should update provider name", function (done) {
         request(url)
             .put('/providers/' + providerId)
             .send(providerNameUpdate)
@@ -152,7 +152,7 @@ describe("Providers Tests", function () {
 // =========================================================================
 // PUT update provider status
 // =========================================================================
-    it("Should update provider status", function (done) {
+    it("PUT Should update provider status", function (done) {
         request(url)
             .put('/providers/' + providerId)
             .send(providerStatusUpdate)
@@ -169,7 +169,7 @@ describe("Providers Tests", function () {
 // =========================================================================
 // DELETE remove provider
 // =========================================================================
-    it("Should delete newly created provider", function (done) {
+    it("DELETE Should delete newly created provider", function (done) {
         request(url)
             .delete('/providers/' + providerId)
             .end(function (err, res) {
