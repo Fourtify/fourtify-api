@@ -88,7 +88,7 @@ describe("Appointments Tests", function () {
     };
 
 
-    it('Should Create a temp visitor for testing', function (done) {
+    it('POST Should Create a temp visitor for testing', function (done) {
         request(url)
             .post('/visitors')
             .set('Authorization', 'Bearer ' + accessToken)
@@ -120,7 +120,7 @@ describe("Appointments Tests", function () {
 
     var tempApptId;
 
-    it("Create an appointment", function (done) {
+    it("POST Create an appointment", function (done) {
         request(url)
             .post('/appointments')
             .set('Authorization', 'Bearer ' + accessToken)
@@ -175,7 +175,7 @@ describe("Appointments Tests", function () {
         status: "Checked-In"
     };
 
-    it("Should update appointment end and status", function (done) {
+    it("PUT Should update appointment end and status", function (done) {
         request(url)
             .put('/appointments/' + tempApptId)
             .set('Authorization', 'Bearer ' + accessToken)
@@ -201,7 +201,7 @@ describe("Appointments Tests", function () {
 // =========================================================================
 // DELETE - /appointment/:appointmentId
 // =========================================================================
-    it("Should delete an appointment.", function (done) {
+    it("DELETE Should delete an appointment.", function (done) {
         request(url)
             .delete('/appointments/' + tempApptId)
             .set('Authorization', 'Bearer ' + accessToken)
