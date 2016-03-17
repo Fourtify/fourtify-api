@@ -3,8 +3,10 @@ var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
 var d = new Date().getTime();
-var newQueue;
-var updateQueue;
+var start = moment(d);
+var end = moment(d).add(1, 'hours');
+var visitorId;
+var tempApptId;
 
 describe("queue", function () {
 
@@ -94,7 +96,7 @@ describe("queue", function () {
         }
     };
 
-    var visitorId;
+
 
     it('POST Should Create a visitor', function (done) {
         request(url)
@@ -116,12 +118,47 @@ describe("queue", function () {
 
 
 // =========================================================================
+// POST - /appointment  (create temp appt)
+// =========================================================================
+
+    var newAppt = {
+        visitor: visitorId,
+        start: start,
+        end: end
+    };
+
+
+
+    it("POST Create an appointment", function (done) {
+        request(url)
+            .post('/appointments')
+            .set('Authorization', 'Bearer ' + accessToken)
+            .send(newAppt)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('_id');
+                tempApptId = res.body._id;
+                res.body.should.have.property('_visitor');
+                res.body.should.have.property('_start');
+                res.body.should.have.property('_end');
+                res.body.should.have.property('_status');
+                //res.body.should.have.property('_reason');
+                done();
+            });
+    });
+
+
+// =========================================================================
 // POST - /queue
 // =========================================================================
 
     var newQueue = {
-        "visitor": "56ea02cbfff772cc283d2dc1",
-        "appointment": "56ea0335fff772cc283d2dc8"
+        "visitor": visitorId,
+        "appointment": tempApptId
     };
 
     var queueid;
