@@ -5,7 +5,7 @@ var url = "http://127.0.0.1:3001";
 
 var d = new Date();
 var salt = d.getTime();
-var nameToUse = 'TheRealTrump'+salt;
+var nameToUse = 'TheRealTrump' + salt;
 var providerId;
 
 var updatedName = 'DonDonJonJon';
@@ -65,100 +65,99 @@ var providerStatusUpdate = {
 };
 
 
-/**
- * Description header - Actual tests below
- */
-describe("Providers Tests", function(){
+describe("Providers Tests", function () {
 
-    /**
-     * POST create new provider
-     */
-    it("POST Should create provider with initial employee", function(done){
+// =========================================================================
+// POST create new provider
+// =========================================================================
+    it("POST Should create provider with initial employee", function (done) {
         request(url)
-        .post('/providers')
-        .send(providerCreate)
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',200);
-            res.should.be.json;
-            res.body.should.not.be.empty();
+            .post('/providers')
+            .send(providerCreate)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
 
-            //Provider checks
-            res.body.should.have.property('provider');
-            res.body.provider.should.have.property('_id');
-            providerId = res.body.provider._id;
-            res.body.provider._id.should.not.be.empty();
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.not.be.empty();
 
-            //Employee checks
-            res.body.should.have.property('employee');
+                //Provider checks
+                res.body.should.have.property('provider');
+                res.body.provider.should.have.property('_id');
+                providerId = res.body.provider._id;
+                res.body.provider._id.should.not.be.empty();
 
-            /*
-            res.body.should.have.property('_password');
-            res.body.should.have.property('_phone');
-            res.body.should.have.property('_status');
-            res.body.should.have.property('_isPopulated');
+                //Employee checks
+                res.body.should.have.property('employee');
 
-            res.body.provider.should.have.property('_id');
-            res.body.provider._id.should.not.be.empty();
-            res.body.provider.should.have.property('_isInDatabase');
-            res.body.provider.should.have.property('_name');
-            res.body.provider.should.have.property('_clientId');
-            res.body.provider.should.have.property('_clientSecret');
-            res.body.provider.should.have.property('_status');
-            res.body.provider.should.have.property('_isPopulated');
-            */
-            done();
-        });
-    });
+                /*
+                 res.body.should.have.property('_password');
+                 res.body.should.have.property('_phone');
+                 res.body.should.have.property('_status');
+                 res.body.should.have.property('_isPopulated');
 
-    /**
-     * POST with bad create input
-     */
-    it("POST should error if provider info wrong", function(done){
-        request(url)
-        .post('/providers')
-        .send(badProviderInfo)
-        .end(function(err, res){
-            if(err)
-                throw(err);
-            
-            res.should.have.property('status',500);
-            res.should.be.json;
-            res.body.should.have.property('_code');
-            res.body._code.should.be.equal("PROVIDER006");
-            res.body.should.have.property('_msg');
-            done();
-        });
+                 res.body.provider.should.have.property('_id');
+                 res.body.provider._id.should.not.be.empty();
+                 res.body.provider.should.have.property('_isInDatabase');
+                 res.body.provider.should.have.property('_name');
+                 res.body.provider.should.have.property('_clientId');
+                 res.body.provider.should.have.property('_clientSecret');
+                 res.body.provider.should.have.property('_status');
+                 res.body.provider.should.have.property('_isPopulated');
+                 */
+                done();
+            });
     });
 
 
-    /**
-     * PUT update provider name
-     */
-    it("Should update provider name", function(done){
+// =========================================================================
+// POST with bad create input
+// =========================================================================
+    it("POST should error if provider info wrong", function (done) {
         request(url)
-        .put('/providers/'+providerId)
-        .send(providerNameUpdate)
-        .end(function(err, res){
-            res.should.have.property('status',200);
-            res.should.be.json;
-            res.body.should.have.property('_name');
-            res.body._name.should.be.equal(updatedName);
-            done();
-        });
+            .post('/providers')
+            .send(badProviderInfo)
+            .end(function (err, res) {
+                if (err)
+                    throw(err);
+
+                res.should.have.property('status', 500);
+                res.should.be.json;
+                res.body.should.have.property('_code');
+                res.body._code.should.be.equal("PROVIDER006");
+                res.body.should.have.property('_msg');
+                done();
+            });
     });
 
-    /**
-     * PUT update provider status
-     */
-    it("Should update provider status", function(done){
+
+// =========================================================================
+// PUT update provider name
+// =========================================================================
+    it("Should update provider name", function (done) {
         request(url)
-            .put('/providers/'+providerId)
+            .put('/providers/' + providerId)
+            .send(providerNameUpdate)
+            .end(function (err, res) {
+                res.should.have.property('status', 200);
+                res.should.be.json;
+                res.body.should.have.property('_name');
+                res.body._name.should.be.equal(updatedName);
+                done();
+            });
+    });
+
+
+// =========================================================================
+// PUT update provider status
+// =========================================================================
+    it("Should update provider status", function (done) {
+        request(url)
+            .put('/providers/' + providerId)
             .send(providerStatusUpdate)
-            .end(function(err, res){
-                res.should.have.property('status',200);
+            .end(function (err, res) {
+                res.should.have.property('status', 200);
                 res.should.be.json;
                 res.body.should.have.property('_status');
                 res.body._status.should.be.equal(updatedStatus);
@@ -167,18 +166,17 @@ describe("Providers Tests", function(){
     });
 
 
-    /**
-     * DELETE remove provider
-     */
-    it("Should delete newly created provider", function(done){
+// =========================================================================
+// DELETE remove provider
+// =========================================================================
+    it("Should delete newly created provider", function (done) {
         request(url)
-            .delete('/providers/'+providerId)
-            .end(function(err, res){
-                res.should.have.property('status',200);
+            .delete('/providers/' + providerId)
+            .end(function (err, res) {
+                res.should.have.property('status', 200);
                 done();
             });
     });
-
 
 
 });
