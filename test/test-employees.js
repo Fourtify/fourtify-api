@@ -3,27 +3,21 @@ var chai = require('chai');
 var url = "http://127.0.0.1:3001";
 
 // var Auth = require("../modules/authentication/src/AuthenticationFactory"); // generate access token using a test provider id
-
-var auth = { 'Authorization': 'Basic NDE1ZTg1YzMxYjJmNDgyZmVhY2FjNzY4Y2IyMzdjZjU6YjQwZGQ0MWY0MTcyYzY2OTdiM2IzYWJkZTcwMWExYzc=', 'Content-Type': 'application/x-www-form-urlencoded' };
+var auth = {
+    'Authorization': 'Basic NjkzZTlhZjg0ZDNkZmNjNzFlNjQwZTAwNWJkYzVlMmU6ZTY2ODgzNjE1NTYzY2QxN2U1OWQ4NjdiMjhjNDkzZjg=',
+    'Content-Type': 'application/x-www-form-urlencoded'
+};
 
 var clientInfo = {
      grant_type: 'password',
-     email: 'carl@salonfrontdesk.com',
-     password: '123456' 
+     email: 'biz@biz.com',
+     password: '12345'
 };
 
-var accessId, autho,
-    obj = {
-        employee: {
-            id: '56ab93859876c60b2d7396ac'
-        },
-        provider: {
-            id: '56c5795f3116f7543730c639'
-        }
-    };
+var accessId, autho, temProviderId;
 
 describe("Employees", function(){
-    
+     
      it("should receive an authorization accessToken", function(done){
         request(url)
         .post('/authentication/token')
@@ -39,6 +33,9 @@ describe("Employees", function(){
             res.body.should.have.property('accessToken');
             res.body.accessToken.should.not.be.empty();
             res.body.accessToken._value.should.not.be.empty();
+            res.body.should.have.property('provider');
+            res.body.provider.should.have.property('_id');
+            temProviderId = res.body.provider._id;
             accessId = res.body.accessToken._value;
             done();
         });
@@ -63,8 +60,39 @@ describe("Employees", function(){
             res.should.be.json;
             res.body.should.have.property('count');
             res.body.count.should.be.an.Number();
-            // in this particular case, 1
-            res.body.count.should.be.equal(1);
+            done();
+        });
+    });
+    
+    var tempEmId;
+    // POST - /employees  Create an employee
+    it("POST should create an employee", function(done){
+        var form = {
+            name: {
+                first: 'jjj',
+                last: 'eir'
+            },
+            email: 'any@yahoo.com',
+            password: '123456',
+            title: 'ee',
+            phone: {
+                type: 'home',
+                number: '1231231231'
+            }
+        };
+        
+        request(url)
+        .post('/employees')
+        .set({'Authorization': autho, 'Content-Type': 'application/json'})
+        .send(form)
+        .end(function(err, res){
+            if(err)
+                throw(err);
+                
+            res.should.have.property('status',200);
+            res.body.should.have.property('_id');
+            tempEmId = res.body._id;
+            res.should.be.json; 
             done();
         });
     });
@@ -80,7 +108,7 @@ describe("Employees", function(){
 
             res.should.have.property('status',200);
             res.should.be.json; 
-            res.body[0].should.have.property('_id', "56ab93859876c60b2d7396ac");
+            res.body[0].should.have.property('_id');
             res.body[0].should.have.property('_name');
             res.body[0].should.have.property('_phone');
             res.body[0].should.have.property('_isInDatabase');
@@ -89,19 +117,19 @@ describe("Employees", function(){
         });
     });
     
-    // POST - /employees  Create an employee
-    it("POST should create an employee", function(done){
-        var form = { 
-             phone: '1234567899',
-             title: 'idk',
-             email: 'abc@yahoo.com',
-             password: '123456',
-             provider: '56c5795f3116f7543730c639',
-             name: 'newEmp' };
+    // PUT - /employees/:employeeId/profile
+    it("PUT should update employee profile", function(done){
+        var form = {
+            name: {
+                first: 'jjj',
+                last: 'eir'
+            },
+            email: 'newany@yahoo.com'
+        };
         
         request(url)
-        .post('/employees')
-        .set({'Authorization': autho})
+        .put('/employees/'+ tempEmId + '/profile')
+        .set({'Authorization': autho, 'Content-Type': 'application/json'})
         .send(form)
         .end(function(err, res){
             if(err)
@@ -109,42 +137,22 @@ describe("Employees", function(){
                 
             res.should.have.property('status',200);
             res.should.be.json; 
+            res.body.should.have.property('_email');
+            res.body._email.should.be.equal('newany@yahoo.com');
             done();
         });
     });
     
-    // PUT - /employees/:employeeId/profile
-    it("PUT should update employee profile", function(done){
-        var form = { 
-             phone: '1234567899',
-             title: 'idk',
-             email: 'abc@yahoo.com',
-             provider: '56c5795f3116f7543730c639',
-             name: 'newEmp' };
-        
-        request(url)
-        .put('/employees/56ab93859876c60b2d7396ac/profile')
-        .set({'Authorization': autho, })
-        .send(form)
-        .end(function(err, res){
-            if(err)
-                throw(err);
-                
-            res.should.have.property('status',200);
-            res.should.be.json; 
-            done();
-        });
-    });
     
     // PUT - /employees/:employeeId/password
     it("PUT should update employee password", function(done){
-        var form = { 
-             password: '989898934' };
+        var pw = {
+            password: "new12345678" };
         
         request(url)
-        .put('/employees/56ab93859876c60b2d7396ac/password')
-        .set({'Authorization': autho, })
-        .send(form)
+        .put('/employees/' + tempEmId + '/password')
+        .set({'Authorization': autho, 'Content-Type': 'application/json'})
+        .send(pw)
         .end(function(err, res){
             if(err)
                 throw(err);
@@ -157,27 +165,21 @@ describe("Employees", function(){
         });
     });
     
-    /*
+    
     // DELETE - /employees/:employeeId
     it("DELETE should delete employee", function(done){
-        var form = { 
-             password: '989898934' };
         
         request(url)
-        .delete('/employees/56ab93859876c60b2d7396ac')
-        .set({'Authorization': autho, })
-        .send(clientInfo)
+        .delete('/employees/' + tempEmId)
+        .set({'Authorization': autho})
         .end(function(err, res){
             if(err)
                 throw(err);
                 
             res.should.have.property('status',200);
-            res.should.be.empty(); 
-            //res.body.should.have.property('_password');
-            //res.body._password.should.be.equal('989898934');
+            //res.should.be.empty(); 
             done();
         });
     });
-    */
-    
+
 });
