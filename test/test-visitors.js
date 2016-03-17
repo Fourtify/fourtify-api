@@ -107,19 +107,32 @@ describe("Visitor Tests", function () {
 // =========================================================================
 // PUT - /visitor/:visitorId
 // =========================================================================
+
+    var updateVisitor = {
+        "name": {
+            "first": "David",
+            "last": "Bowie"
+        },
+        "email": "dave@bowie.com",
+        "phone": {
+            "type":"spacephone",
+            "number": "918273"
+        }
+    };
+
     it('PUT Should Update a visitor', function (done) {
         request(url)
-            .put('/visitors/' + visitorid)
+            .put('/visitors/' + visitorId)
             .set('Authorization', 'Bearer ' + accessToken)
             .send(updateVisitor)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
                 res.should.be.json;
-                res.body.should.have.property('provider');
-                res.body.should.have.property('name');
-                res.body.should.have.property('email');
-                res.body.should.have.property('phone');
-                res.body.should.have.property('status');
+                res.body.should.have.property('_provider');
+                res.body.should.have.property('_name');
+                res.body.should.have.property('_email');
+                res.body.should.have.property('_phone');
+                res.body.should.have.property('_status');
                 done();
             });
     });
@@ -130,7 +143,7 @@ describe("Visitor Tests", function () {
 // =========================================================================
     it('DELETE Should delete a visitor', function (done) {
         request(url)
-            .delete('/visitors/' + visitorid)
+            .delete('/visitors/' + visitorId)
             .set('Authorization', 'Bearer ' + accessToken)
             .end(function (err, res) {
                 res.should.have.property('status', 200);
