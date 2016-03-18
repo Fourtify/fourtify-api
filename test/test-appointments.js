@@ -32,7 +32,7 @@ describe("Appointments Tests", function () {
     var accessToken;
 
     it("POST Retrieve an auth token from server", function (done) {
-        request(url)
+        request("http://api.fourtify.us/")
             .post('/authentication/token')
             .set(auth)
             .send(clientInfo)
