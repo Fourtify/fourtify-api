@@ -1,4 +1,6 @@
 machine:
+  services:
+    - mongodb
   environment:
     NODE_ENV: test
   node:
@@ -6,8 +8,3 @@ machine:
     
   hosts:
     circlehost: 127.0.0.1
-    api.fourtify.us: 127.0.0.1
-
-test:
-  post:
-  - npm test
