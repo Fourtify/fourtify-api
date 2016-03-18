@@ -35,7 +35,7 @@ module.exports = class QueueFactory {
         } else {
             newQueue.provider = newObj.provider;
         }
-        if (newObj.visitor) {
+        if (!newObj.visitor) {
             newQueue.visitor = newObj.visitor;
         } else {
             return callback(new Error("Q001"));
@@ -61,7 +61,6 @@ module.exports = class QueueFactory {
             return callback(new Error("Q001"));
         }
 
-        console.log(updateObj);
         QueueSchema.findOne({
             provider: updateObj.provider,
             _id: updateObj.queueId
