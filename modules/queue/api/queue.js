@@ -72,9 +72,9 @@ router.post('/', AuthMiddleware.authenticate(), function(req, res) {
         return res.status(500).send(new Error("PROVIDER004"));
     }
 
-    if (!req.body.visitor) {
+    /*if (!req.body.visitor) {
         return res.status(500).send(new Error("Q001"));
-    }
+    }*/
 
     QueueFactory.createQueue({
         provider: req.provider.id,
