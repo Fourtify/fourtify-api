@@ -35,11 +35,11 @@ module.exports = class QueueFactory {
         } else {
             newQueue.provider = newObj.provider;
         }
-        if (!newObj.visitor) {
+        //if (!newObj.visitor) {
             newQueue.visitor = newObj.visitor;
-        } else {
-            return callback(new Error("Q001"));
-        }
+        //} else {
+        //    return callback(new Error("Q001"));
+        //}
 
         newQueue.appointment = newObj.appointment;
         newQueue.position = newObj.position;
